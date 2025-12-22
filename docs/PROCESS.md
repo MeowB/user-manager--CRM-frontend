@@ -51,10 +51,9 @@ This phase translates the functional requirements into a first representation of
 6. Note permissions: which actions are restricted to which role.
 
 #### Deliverables:
-
-- Text-based mockups of pages & modals
-- User-flow-based table of contents / checklist
-- Clear mapping of triggers, interactions, and permissions
+	- Text-based mockups of pages & modals
+	- User-flow-based table of contents / checklist
+	- Clear mapping of triggers, interactions, and permissions
 
 > **Note:** For the full text mockup, see "docs/text-mockup.md" file
 
@@ -104,11 +103,11 @@ This phase focuses on establishing the technical foundation of the application, 
 	- Main application routes (dashboard and users)
 
 #### Deliverables:
-- Functional routing with TanStack Router
-- Standalone login page (no layout)
-- Shared application layout for dashboard and users
-- Navigable routes between core pages
-- Solid foundation for future data fetching and feature development
+	- Functional routing with TanStack Router
+	- Standalone login page (no layout)
+	- Shared application layout for dashboard and users
+	- Navigable routes between core pages
+	- Solid foundation for future data fetching and feature development
 
 > **Note:** This phase focuses on routing and layout only. No business logic, data fetching, or UI components are implemented yet.
 
@@ -127,21 +126,51 @@ This step introduces server-state management into the appllication and connects 
 5. Explicitly handle loading and error states in the UI.
 
 #### Deliverables:
-- TanStack Query client and provider wired into the app
-- A mock users data source with async behavior and error simulation
-- A User page fetching data through TanStack Query
-- A simple list rendering user information
-- Clear loading and error states displayed to the user
+	- TanStack Query client and provider wired into the app
+	- A mock users data source with async behavior and error simulation
+	- A User page fetching data through TanStack Query
+	- A simple list rendering user information
+	- Clear loading and error states displayed to the user
 
 > **Note:** This phase focuses on data fetching and server-state management only. The mock API mirrors a real backend response allowing for future integration.
 
+---
+
+### 6. Users Table Integration with shadcn/ui
+This step enhances the Users page by integrating a structured table component from shadcn/ui, improving data presentation while maintaining existing data-fetching logic.
+
+**Purpose:** To upgrade the Users page UI by replacing the basic list with a well-structured table component, demonstrating the ability to integrate third-party UI libraries without altering the underlying data logic.
+
+#### Approach:
+1. Install and configure shadcn/ui in the project.
+2. Create a reusable UsersTable component using shadcn/ui table primitives.
+3. Pass the fetched users data to the UsersTable component.
+4. Display user data in a table layout with columns for Email, Role,.
+5. Ensure that the TanStack Query setup and API contracts remain unchanged.
+
+#### Deliverables:
+	- shadcn/ui installed and configured
+	- A reusable UsersTable component
+	- Users page displaying data in a structured table format
+
+---
+
 ### Next Step
-Improve data presentation by replacing the basic users list with a structured table component, without changing the existing data-fetching logic.
+Improve the usability and clarity of the Users page by adding basic UX refinements, without introducing new data-fetching logic or CRUD functionality.
 
 Key tasks include:
-- Install and configure shadcn/ui
-- Create a reusable UsersTable component
-- Display useres data in a table layout with columns for Name, Email, Role.
-- keep TanStack Query setup and API contracts unchanged.
+- Handle the empty users state with clear message
+- Improve the visual representation of user status 
+- apply minimal table-level polish for readability (striped rows, hover effects)
+- Keep tanStack Query and shadcn/ui integration intact
 
-**Goal:** By the end of this session, the Users page displays real data fetched through TanStack Query.
+### UX & Visual Enhancements Checklist
+
+- [ ] Page title above the table  
+- [ ] Optional short description under the title  
+- [ ] Empty state message when no users are available  
+- [ ] Visual status indicator for user status (active / disabled)  
+- [ ] Improved table spacing and alignment for readability  
+- [ ] Subtle visual boundary around the table container  
+
+**Goal:** By the end of this session, the Users page clearly communicates all relevant user states and feels complete from a UX standpoint.

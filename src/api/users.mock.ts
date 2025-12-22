@@ -7,19 +7,13 @@
  
 */
 
+import type { User } from "../domain/user"
 
-export type UserType = {
-	id: string
-	email: string
-	role: "admin" | "salesAgent" | "viewer"
-	status: "active" | "disabled"
+export type UserResponse = {
+	data: User[]
 }
 
-export type UserResponseType = {
-	data: UserType[]
-}
-
-export async function getUsers(): Promise<UserResponseType> {
+export async function getUsers(): Promise<UserResponse> {
 	await new Promise(r => setTimeout(r, 500))
 
 	if (Math.random() < 0.2) {
