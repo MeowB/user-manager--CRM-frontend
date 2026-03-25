@@ -253,6 +253,26 @@ Build a stable, production-shaped backend foundation capable of connecting to a 
 
 > **Note:** This phase focuses on backend infrastructure only. No user-specific API routes or frontend integration are implemented yet.
 
+11. Authentication Skeleton (Routing Only)
+This step establishes clear entry points for future authentication features while preserving the current backend stability.
+
+**Purpose:**
+To create a dedicated authentication route structure and verify end-to-end request flow from client to server, ensuring the backend is ready to support authentication logic in subsequent steps.
+
+##### Approach:
+1. Created a new auth module under /src/modules/auth.
+2. Implemented auth.route.ts with placeholder endpoints for login and password change.
+3. Defined dummy responses to validate route behavior without introducing logic.
+4. Integrated the auth router into the central routing system (/src/routes/index.ts).
+5. Started the server and verified route accessibility using an API client (e.g., Postman).
+6. Confirmed no regression on existing routes (health-check endpoint).
+
+#### Deliverables:
+- /src/modules/auth/auth.route.ts with /login and /change-password endpoints
+- Auth router successfully mounted under /auth
+- Verified request/response cycle for both endpoints
+- No impact on existing backend functionality
+
 ---
 ### Next Step Admin-Driven User Management & Credential Flow
 Introduce user management capabilities aligned with an internal CRM model, where administrators create and manage user accounts. This phase establishes secure credential handling and role-based access foundations without implementing public registration or email-based onboarding.
@@ -272,3 +292,92 @@ Enable controlled creation of user accounts by administrators, enforce role and 
 - [ ] Implement password change endpoint (POST /auth/change-password)
 - [ ] Restrict protected routes based on user role and status
 - [ ] Document user management and authentication routes
+
+## Authentication & Access — Implementation Breakdown
+
+This phase is intentionally split into small, self-contained sessions to reduce cognitive load and maintain steady progress. Each session is designed to be completed, committed, and stopped without pressure to continue.
+
+---
+
+### Session 1 — Authentication Skeleton
+
+**Description:**  
+Introduce the authentication module structure without implementing security logic yet. This session focuses on wiring and scaffolding only.
+
+**Goal:**  
+Establish a clear `/auth` route structure and integration with the existing Express app.
+
+**Checklist:**
+- [ ] Create `/auth` route module
+- [ ] Create auth controller and/or service placeholders
+- [ ] Wire auth routes into the main router
+- [ ] Expose placeholder endpoints (`POST /auth/login`, `POST /auth/change-password`)
+- [ ] Return temporary stub responses
+
+**Commit message:**  
+`auth: scaffold routes and structure`
+
+---
+
+### Session 2 — Login Logic
+
+**Description:**  
+Implement the core login flow for existing users without introducing token management or route protection yet.
+
+**Goal:**  
+Allow users to authenticate using email and password with proper validation and error handling.
+
+**Checklist:**
+- [ ] Fetch user by email using Prisma
+- [ ] Compare submitted password with stored hash
+- [ ] Reject disabled users
+- [ ] Return success or failure response
+- [ ] Handle invalid credentials gracefully
+
+**Commit message:**  
+`auth: implement login logic`
+
+---
+
+### Session 3 — Password Change Flow
+
+**Description:**  
+Introduce secure credential rotation for users, enforcing password updates when required.
+
+**Goal:**  
+Ensure users can change their password and that newly created accounts are forced to update credentials on first login.
+
+**Checklist:**
+- [ ] Add `mustChangePassword` logic to user model usage
+- [ ] Implement `POST /auth/change-password`
+- [ ] Validate current and new passwords
+- [ ] Hash and persist updated password
+- [ ] Clear password-change requirement after update
+
+**Commit message:**  
+`auth: add password change flow`
+
+---
+
+### Session 4 — Role & Status Enforcement
+
+**Description:**  
+Protect sensitive routes using role-based and status-based access control.
+
+**Goal:**  
+Prevent unauthorized or disabled users from accessing protected API endpoints.
+
+**Checklist:**
+- [ ] Implement basic authentication middleware
+- [ ] Enforce user status checks (active / disabled)
+- [ ] Enforce role-based restrictions where applicable
+- [ ] Apply middleware to protected routes
+- [ ] Return consistent authorization errors
+
+**Commit message:**  
+`auth: enforce role and status access control`
+
+---
+
+> **Note:**  
+> Each session is intentionally independent. Completing and committing a single session is considered full progress for the day.
