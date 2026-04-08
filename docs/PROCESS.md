@@ -253,7 +253,7 @@ Build a stable, production-shaped backend foundation capable of connecting to a 
 
 > **Note:** This phase focuses on backend infrastructure only. No user-specific API routes or frontend integration are implemented yet.
 
-11. Authentication Skeleton (Routing Only)
+### 11. Authentication Skeleton (Routing Only)
 This step establishes clear entry points for future authentication features while preserving the current backend stability.
 
 **Purpose:**
@@ -272,6 +272,55 @@ To create a dedicated authentication route structure and verify end-to-end reque
 - Auth router successfully mounted under /auth
 - Verified request/response cycle for both endpoints
 - No impact on existing backend functionality
+
+
+### Authentication Skeleton
+
+Initial setup of the authentication module and route structure without implementing business logic.
+
+**Purpose:**  
+Establish a clear and modular `/auth` route structure integrated into the Express application, preparing the backend for future authentication features.
+
+#### Approach:
+1. Create `/auth` route module
+2. Define placeholder endpoints for login and password change
+3. Integrate auth routes into the main router
+4. Return stub responses to validate request flow
+
+**Deliverables:**
+- `/auth` route module created
+- Endpoints (`POST /auth/login`, `POST /auth/change-password`) exposed
+- Routes successfully wired into the application
+- Verified request/response cycle with placeholder responses
+
+> **Note:**  
+> This session focuses only on structure and routing. No authentication logic is implemented at this stage.
+
+### Login Logic
+
+Implementation of the core login flow allowing users to authenticate using email and password, with basic validation and error handling.
+
+**Purpose:**  
+Enable user authentication by verifying credentials against stored user data, establishing the foundation for future access control.
+
+#### Approach:
+1. Fetch user by email using Prisma
+2. Validate user existence
+3. Compare submitted password with stored password (temporary plain check)
+4. Handle invalid credentials with consistent responses
+5. Return success response on valid authentication
+
+**Deliverables:**
+- Functional `POST /auth/login` endpoint
+- User lookup via Prisma
+- Credential validation flow implemented
+- Proper error handling for invalid login attempts
+- End-to-end login flow tested
+
+> **Note:**  
+> Password comparison is currently implemented using a temporary plain check for simplicity.  
+> This will be replaced with `bcrypt.compare` in a later step.
+
 
 ---
 ### Next Step Admin-Driven User Management & Credential Flow
@@ -296,46 +345,6 @@ Enable controlled creation of user accounts by administrators, enforce role and 
 ## Authentication & Access — Implementation Breakdown
 
 This phase is intentionally split into small, self-contained sessions to reduce cognitive load and maintain steady progress. Each session is designed to be completed, committed, and stopped without pressure to continue.
-
----
-
-### Session 1 — Authentication Skeleton
-
-**Description:**  
-Introduce the authentication module structure without implementing security logic yet. This session focuses on wiring and scaffolding only.
-
-**Goal:**  
-Establish a clear `/auth` route structure and integration with the existing Express app.
-
-**Checklist:**
-- [ ] Create `/auth` route module
-- [ ] Create auth controller and/or service placeholders
-- [ ] Wire auth routes into the main router
-- [ ] Expose placeholder endpoints (`POST /auth/login`, `POST /auth/change-password`)
-- [ ] Return temporary stub responses
-
-**Commit message:**  
-`auth: scaffold routes and structure`
-
----
-
-### Session 2 — Login Logic
-
-**Description:**  
-Implement the core login flow for existing users without introducing token management or route protection yet.
-
-**Goal:**  
-Allow users to authenticate using email and password with proper validation and error handling.
-
-**Checklist:**
-- [ ] Fetch user by email using Prisma
-- [ ] Compare submitted password with stored hash
-- [ ] Reject disabled users
-- [ ] Return success or failure response
-- [ ] Handle invalid credentials gracefully
-
-**Commit message:**  
-`auth: implement login logic`
 
 ---
 
