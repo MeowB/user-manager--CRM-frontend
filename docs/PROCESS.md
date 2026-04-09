@@ -390,3 +390,10 @@ Prevent unauthorized or disabled users from accessing protected API endpoints.
 
 > **Note:**  
 > Each session is intentionally independent. Completing and committing a single session is considered full progress for the day.
+
+### Next Step — Leads Management (CRM Core)
+
+- Define Lead model (id, name, email, status, etc.)
+- Create CRUD endpoints for leads
+- Link leads to users (owner / assigned)
+- Prepare for pipeline/status tracking
