@@ -321,6 +321,32 @@ Enable user authentication by verifying credentials against stored user data, es
 > Password comparison is currently implemented using a temporary plain check for simplicity.  
 > This will be replaced with `bcrypt.compare` in a later step.
 
+### Session X — Leads Creation (POST /leads)
+
+Implementation of the first business feature allowing users to create leads and persist them in the database.
+
+**Purpose:**  
+Introduce the first core CRM entity and validate the full backend flow from request to database persistence.
+
+#### Approach:
+1. Define Lead model in Prisma schema
+2. Run migration to update database
+3. Generate Prisma client
+4. Create `/leads` route module
+5. Implement `POST /leads` endpoint
+6. Connect route to main application
+7. Test endpoint using Postman
+
+**Deliverables:**
+- Lead model defined and migrated
+- Functional `POST /leads` endpoint
+- Successful data persistence in database
+- Verified request/response cycle
+
+> **Note:**  
+> Encountered Prisma client sync issues requiring a full reinstall and regeneration.  
+> Resolved by returning to default Prisma client setup and removing custom output configuration.
+
 
 ---
 ### Next Step Admin-Driven User Management & Credential Flow
