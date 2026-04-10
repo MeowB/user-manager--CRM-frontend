@@ -321,7 +321,7 @@ Enable user authentication by verifying credentials against stored user data, es
 > Password comparison is currently implemented using a temporary plain check for simplicity.  
 > This will be replaced with `bcrypt.compare` in a later step.
 
-### Session X — Leads Creation (POST /leads)
+### Session 12 — Leads Creation (POST /leads)
 
 Implementation of the first business feature allowing users to create leads and persist them in the database.
 
@@ -347,6 +347,26 @@ Introduce the first core CRM entity and validate the full backend flow from requ
 > Encountered Prisma client sync issues requiring a full reinstall and regeneration.  
 > Resolved by returning to default Prisma client setup and removing custom output configuration.
 
+### Session 13 — Leads Retrieval (GET /leads)
+
+Implementation of the endpoint to retrieve all leads from the database.
+
+**Purpose:**  
+Enable reading persisted lead data and validate full read flow from database to client.
+
+#### Approach:
+1. Add GET /leads route
+2. Use Prisma `findMany` to fetch all leads
+3. Return results as JSON
+4. Test endpoint using Postman
+
+**Deliverables:**
+- Functional GET /leads endpoint
+- Leads successfully retrieved from database
+- Verified response in Postman
+
+> **Note:**  
+> Minimal implementation without filtering or pagination to maintain scope and speed.
 
 ---
 ### Next Step Admin-Driven User Management & Credential Flow
