@@ -368,6 +368,30 @@ Enable reading persisted lead data and validate full read flow from database to 
 > **Note:**  
 > Minimal implementation without filtering or pagination to maintain scope and speed.
 
+### Session 14 — Lead Detail Retrieval (GET /leads/:id)
+
+Extension of the Leads module to support retrieval of a single lead by its unique identifier.
+
+**Purpose:**  
+Enable access to individual lead data and complete the core read capabilities of the Leads module.
+
+#### Approach:
+1. Implement `GET /leads/:id` endpoint
+2. Extract `id` from route parameters
+3. Query database using `prisma.lead.findUnique`
+4. Handle non-existent lead with 404 response
+5. Test endpoint using valid and invalid IDs
+6. Verify behavior with multiple existing leads
+
+**Deliverables:**
+- Functional `GET /leads/:id` endpoint
+- Proper 404 response for missing leads
+- Verified retrieval of multiple distinct records
+
+> **Note:**  
+> Existing `GET /leads` endpoint was reused to validate multiple records.  
+> UUID format was preserved for identifiers, aligning with the existing data model.
+
 ---
 ### Next Step Admin-Driven User Management & Credential Flow
 Introduce user management capabilities aligned with an internal CRM model, where administrators create and manage user accounts. This phase establishes secure credential handling and role-based access foundations without implementing public registration or email-based onboarding.
