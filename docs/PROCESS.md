@@ -392,6 +392,31 @@ Enable access to individual lead data and complete the core read capabilities of
 > Existing `GET /leads` endpoint was reused to validate multiple records.  
 > UUID format was preserved for identifiers, aligning with the existing data model.
 
+
+### Session 15 — Lead Update (PATCH /leads/:id)
+
+Implementation of update functionality for the Lead entity, enabling modification of existing lead data.
+
+**Purpose:**  
+Complete the "update" portion of CRUD for leads and allow existing records to be modified through the API.
+
+#### Approach:
+1. Implement `PATCH /leads/:id` endpoint
+2. Extract `id` from route parameters
+3. Extract updatable fields (`name`, `email`, `company`) from request body
+4. Use `prisma.lead.update` to modify the record
+5. Handle non-existent lead using try/catch (Prisma throws on missing record)
+6. Test endpoint using Postman with valid and invalid IDs
+7. Verify updated data via `GET /leads` and `GET /leads/:id`
+
+**Deliverables:**
+- Functional `PATCH /leads/:id` endpoint
+- Successful update of existing lead data
+- Proper 404 response when lead does not exist
+- Verified persistence of updated values
+
+> **Note:**  
+> Unlike `findUnique`, Prisma `update` throws an error when the record does not exist, requiring try/catch handling instead of a null check.
 ---
 ### Next Step Admin-Driven User Management & Credential Flow
 Introduce user management capabilities aligned with an internal CRM model, where administrators create and manage user accounts. This phase establishes secure credential handling and role-based access foundations without implementing public registration or email-based onboarding.
