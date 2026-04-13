@@ -417,6 +417,31 @@ Complete the "update" portion of CRUD for leads and allow existing records to be
 
 > **Note:**  
 > Unlike `findUnique`, Prisma `update` throws an error when the record does not exist, requiring try/catch handling instead of a null check.
+
+### Session 16 — Lead Deletion (DELETE /leads/:id)
+
+Implementation of deletion functionality for the Lead entity, including proper handling of non-existent records.
+
+**Purpose:**  
+Enable removal of leads from the database while ensuring correct API behavior when attempting to delete a missing resource.
+
+#### Approach:
+1. Implement `DELETE /leads/:id` endpoint
+2. Extract `id` from route parameters
+3. Use `prisma.lead.delete` to remove the lead
+4. Wrap operation in try/catch block
+5. Handle Prisma `P2025` error for non-existent leads
+6. Return appropriate HTTP responses (200, 404, 500)
+7. Test endpoint using valid and invalid IDs
+
+**Deliverables:**
+- Functional delete endpoint
+- Proper 404 response when lead does not exist
+- 500 response for unexpected errors
+- Verified deletion behavior through API testing
+
+> **Note:**  
+> Error handling was refined to distinguish between expected (not found) and unexpected (server) errors while keeping implementation minimal and aligned with MVP scope.
 ---
 ### Next Step Admin-Driven User Management & Credential Flow
 Introduce user management capabilities aligned with an internal CRM model, where administrators create and manage user accounts. This phase establishes secure credential handling and role-based access foundations without implementing public registration or email-based onboarding.
