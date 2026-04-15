@@ -442,6 +442,31 @@ Enable removal of leads from the database while ensuring correct API behavior wh
 
 > **Note:**  
 > Error handling was refined to distinguish between expected (not found) and unexpected (server) errors while keeping implementation minimal and aligned with MVP scope.
+
+
+### Session 17 — Leads Display (Frontend Integration)
+
+Integration of the Leads API into the frontend, enabling retrieval and display of lead data in the UI.
+
+**Purpose:**  
+Connect frontend to backend and visualize lead data, completing the first full-stack data flow for the Leads feature.
+
+#### Approach:
+1. Fetch leads from backend (`GET /leads`)
+2. Handle asynchronous data loading in React
+3. Resolve TypeScript issue with possibly undefined data
+4. Reuse existing UI table structure from users page
+5. Map leads data into table rows
+6. Validate display with multiple records
+
+**Deliverables:**
+- Leads successfully fetched from backend
+- Leads displayed in frontend table
+- TypeScript-safe handling of async data
+- Verified end-to-end data flow (DB → API → UI)
+
+> **Note:**  
+> Existing UI components were reused and adapted rather than rebuilt, prioritizing speed and consistency. Styling and layout refinement are intentionally deferred to maintain focus on functionality.
 ---
 ### Next Step Admin-Driven User Management & Credential Flow
 Introduce user management capabilities aligned with an internal CRM model, where administrators create and manage user accounts. This phase establishes secure credential handling and role-based access foundations without implementing public registration or email-based onboarding.
