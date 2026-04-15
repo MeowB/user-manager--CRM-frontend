@@ -13,13 +13,15 @@ import { layoutRoute } from "./layout";
 import { loginRoute } from "./routes/login";
 import { dashboardRoute } from "./routes/dashboard";
 import { usersRoute } from "./routes/users";
+import { leadsRoute } from "./routes/leads";
 
 const routeTree = rootRoute.addChildren([
 	indexRoute,
 	loginRoute,
 	layoutRoute.addChildren([
 		dashboardRoute,
-		usersRoute
+		usersRoute,
+		leadsRoute
 	])
 ])
 
