@@ -467,6 +467,30 @@ Connect frontend to backend and visualize lead data, completing the first full-s
 
 > **Note:**  
 > Existing UI components were reused and adapted rather than rebuilt, prioritizing speed and consistency. Styling and layout refinement are intentionally deferred to maintain focus on functionality.
+
+### Session 18 — Lead Creation (Frontend Integration)
+
+Implementation of lead creation from the frontend, completing the full user flow for the Leads feature.
+
+**Purpose:**  
+Allow users to create new leads directly from the UI and validate the full data flow from frontend to database.
+
+#### Approach:
+1. Create a simple form in the frontend
+2. Handle form submission with React
+3. Prevent default form behavior
+4. Send POST request to `/leads`
+5. Refresh or update displayed leads
+6. Verify new lead appears in UI and database
+
+**Deliverables:**
+- Functional form for creating leads
+- Successful POST request from frontend
+- New leads persisted in database
+- UI updated with newly created lead
+
+> **Note:**  
+> Implementation was intentionally kept simple (no modal or validation) to prioritize completion of the full feature loop.
 ---
 ### Next Step Admin-Driven User Management & Credential Flow
 Introduce user management capabilities aligned with an internal CRM model, where administrators create and manage user accounts. This phase establishes secure credential handling and role-based access foundations without implementing public registration or email-based onboarding.
