@@ -491,6 +491,29 @@ Allow users to create new leads directly from the UI and validate the full data 
 
 > **Note:**  
 > Implementation was intentionally kept simple (no modal or validation) to prioritize completion of the full feature loop.
+
+### Session 19 — Lead Deletion (Frontend Action)
+
+Integration of lead deletion from the frontend, enabling users to remove leads directly from the UI.
+
+**Purpose:**  
+Allow users to delete leads through the interface and validate the full deletion flow from frontend to database.
+
+#### Approach:
+1. Add a delete button to each lead row in the table
+2. Attach click handler to trigger deletion
+3. Send DELETE request to `/leads/:id`
+4. Refresh or update leads list after deletion
+5. Verify removal in both UI and database
+
+**Deliverables:**
+- Functional delete button in UI
+- Successful DELETE request from frontend
+- Lead removed from database
+- UI updated to reflect deletion
+
+> **Note:**  
+> A simple button-based approach was used without confirmation or additional UI feedback to maintain speed and focus on core functionality.
 ---
 ### Next Step Admin-Driven User Management & Credential Flow
 Introduce user management capabilities aligned with an internal CRM model, where administrators create and manage user accounts. This phase establishes secure credential handling and role-based access foundations without implementing public registration or email-based onboarding.
