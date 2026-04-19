@@ -3,7 +3,6 @@ import {
 	TableBody,
 	TableCaption,
 	TableCell,
-	TableFooter,
 	TableHead,
 	TableHeader,
 	TableRow,
@@ -36,7 +35,7 @@ const LeadsTable = () => {
 
 	return (<>
 		<Table>
-			<TableCaption>A list of your recent invoices.</TableCaption>
+			<TableCaption>A list of your leads.</TableCaption>
 			<TableHeader>
 				<TableRow>
 					<TableHead className="w-25">Name</TableHead>

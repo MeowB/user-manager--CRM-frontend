@@ -514,6 +514,30 @@ Allow users to delete leads through the interface and validate the full deletion
 
 > **Note:**  
 > A simple button-based approach was used without confirmation or additional UI feedback to maintain speed and focus on core functionality.
+
+### Session 20 — Lead Creation Modal (Frontend UX)
+
+Refinement of the lead creation flow by moving the form into a modal and improving basic input handling.
+
+**Purpose:**  
+Improve user experience by isolating lead creation in a dedicated modal while ensuring reliable form submission.
+
+#### Approach:
+1. Move lead creation form into a shadcn Dialog (modal)
+2. Fix form submission issue caused by portal rendering
+3. Ensure form is correctly placed inside DialogContent
+4. Handle form submission with POST request to `/leads`
+5. Add basic guard to prevent empty field submission
+6. Validate functionality through UI interaction and database updates
+
+**Deliverables:**
+- Functional modal for creating leads
+- Correct form submission within Dialog context
+- Successful POST request from modal
+- Basic protection against empty inputs
+
+> **Note:**  
+> Implementation focused on usability and correctness. Validation remains minimal and will be expanded later if needed.
 ---
 ### Next Step Admin-Driven User Management & Credential Flow
 Introduce user management capabilities aligned with an internal CRM model, where administrators create and manage user accounts. This phase establishes secure credential handling and role-based access foundations without implementing public registration or email-based onboarding.
