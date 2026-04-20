@@ -538,6 +538,30 @@ Improve user experience by isolating lead creation in a dedicated modal while en
 
 > **Note:**  
 > Implementation focused on usability and correctness. Validation remains minimal and will be expanded later if needed.
+
+### Session 21 — Navigation Layout & Sidebar (Frontend Polish)
+
+Implementation of a basic application layout with sidebar navigation and active route highlighting.
+
+**Purpose:**  
+Improve usability and structure by introducing a persistent navigation system, making the app feel more like a real product.
+
+#### Approach:
+1. Replace grid layout with flexbox for simpler structure
+2. Create a sidebar navigation with links (Dashboard, Users, Leads)
+3. Style sidebar with subtle background and border separation
+4. Implement active route highlighting using router features
+5. Organize layout into sidebar + main content structure
+6. Remove unnecessary footer to simplify layout
+
+**Deliverables:**
+- Functional sidebar navigation
+- Active page highlighting
+- Clean layout structure (sidebar + content)
+- Improved visual clarity and usability
+
+> **Note:**  
+> Styling was intentionally kept minimal, focusing on clarity and structure rather than visual polish.
 ---
 ### Next Step Admin-Driven User Management & Credential Flow
 Introduce user management capabilities aligned with an internal CRM model, where administrators create and manage user accounts. This phase establishes secure credential handling and role-based access foundations without implementing public registration or email-based onboarding.
