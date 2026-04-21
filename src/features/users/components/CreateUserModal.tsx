@@ -131,7 +131,7 @@ export function CreateUserModal({ open, setOpen }: CreateUserModalProps) {
 
 						</div>
 					</div>
-					<DialogFooter>
+					<DialogFooter className="mt-4">
 						<DialogClose asChild>
 							<Button variant="outline">Cancel</Button>
 						</DialogClose>

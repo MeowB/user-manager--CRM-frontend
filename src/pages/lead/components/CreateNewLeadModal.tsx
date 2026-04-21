@@ -6,12 +6,17 @@ import {
 	DialogFooter,
 	DialogHeader,
 	DialogTitle,
-	DialogTrigger,
 } from "@/components/ui/dialog"
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 
-const CreateNewLeadModal = () => {
+type NewLeadModalProps = {
+	open: boolean,
+	setOpen: (open: boolean) => void
+}
+
+const CreateNewLeadModal = ({ open, setOpen }: NewLeadModalProps) => {
+
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
@@ -40,16 +45,13 @@ const CreateNewLeadModal = () => {
 	}
 
 	return (
-		<Dialog>
-			<DialogTrigger asChild>
-				<Button variant="outline">New lead +</Button>
-			</DialogTrigger>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogContent className="sm:max-w-sm">
 				<form onSubmit={handleSubmit}>
 					<DialogHeader>
 						<DialogTitle>Add Lead</DialogTitle>
 					</DialogHeader>
-					<FieldGroup>
+					<FieldGroup className="mt-4">
 						<Field>
 							<Input id="name" name="name" placeholder="Name" />
 						</Field>
@@ -60,7 +62,7 @@ const CreateNewLeadModal = () => {
 							<Input id="company" name="company" placeholder="company" />
 						</Field>
 					</FieldGroup>
-					<DialogFooter>
+					<DialogFooter className="mt-4">
 						<DialogClose asChild>
 							<Button variant="outline">Cancel</Button>
 						</DialogClose>

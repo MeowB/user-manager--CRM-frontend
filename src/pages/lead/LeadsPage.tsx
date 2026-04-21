@@ -1,12 +1,18 @@
 import LeadsTable from "./components/LeadsTable"
-import CreateNewLeadModal from "./components/CreateNewLeadModal"
 
 const LeadPage = () => {
 
 	return (
 		<>
-			<CreateNewLeadModal />
-			<LeadsTable />
+			<div className="mx-auto">
+				<h1 className="text-2xl font-semibold">Leads</h1>
+				<p className="text-sm text-muted-foreground mt-1">
+					List of leads.
+				</p>
+
+				<LeadsTable />
+
+			</div>
 		</>
 	)
 }

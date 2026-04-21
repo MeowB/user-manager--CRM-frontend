@@ -562,6 +562,31 @@ Improve usability and structure by introducing a persistent navigation system, m
 
 > **Note:**  
 > Styling was intentionally kept minimal, focusing on clarity and structure rather than visual polish.
+
+### Session 22 — Leads Page Polish (Frontend UI)
+
+Refinement of the Leads page to improve layout clarity, spacing, and overall presentation.
+
+**Purpose:**  
+Enhance readability and visual structure of the Leads feature to make the interface more consistent and demo-ready.
+
+#### Approach:
+1. Adjust table layout and spacing for better readability
+2. Improve alignment of columns and action buttons
+3. Refine positioning of primary action (“Add Lead”)
+4. Ensure consistent styling with existing components
+5. Validate visual clarity with multiple data entries
+
+**Deliverables:**
+- Cleaner and more readable leads table
+- Improved spacing and alignment
+- More consistent UI presentation across elements
+- Demo-ready interface for Leads feature
+
+> **Note:**  
+> Minor inconsistencies with the Users page were identified and will be addressed later as part of a broader UI consistency pass.
+
+
 ---
 ### Next Step Admin-Driven User Management & Credential Flow
 Introduce user management capabilities aligned with an internal CRM model, where administrators create and manage user accounts. This phase establishes secure credential handling and role-based access foundations without implementing public registration or email-based onboarding.
