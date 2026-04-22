@@ -9,12 +9,15 @@ import {
 import { useEffect, useState } from "react"
 import type { Lead } from "@/domain/lead";
 import { Button } from "@/components/ui/button";
-import { TrashIcon } from "lucide-react";
+import { TrashIcon, PencilIcon } from "lucide-react";
 import CreateNewLeadModal from "./CreateNewLeadModal"
+import EditLeadModal from "./EditLeadModal";
 
 
 const LeadsTable = () => {
 	const [newLeadModalOpen, setNewLeadModalOpen] = useState<boolean>(false)
+	const [editLeadModalOpen, setEditLeadModalOpen] = useState<boolean>(false)
+	const [currentLead, setCurrentLead] = useState<Lead>()
 	const [leads, setLeads] = useState<Lead[]>()
 
 	const fetchLeads = async () => {
@@ -27,16 +30,20 @@ const LeadsTable = () => {
 			method: "DELETE",
 		})
 
-		fetchLeads()
+		fetchLeads().then(setLeads)
 	}
 
 	useEffect(() => {
 		fetchLeads().then(setLeads)
-	}, [handleDelete])
+	}, [newLeadModalOpen, editLeadModalOpen])
 
 	return (
 		<>
 			<div className="w-full flex flex-col">
+
+				<EditLeadModal open={editLeadModalOpen} setOpen={setEditLeadModalOpen} lead={currentLead} />
+				<CreateNewLeadModal open={newLeadModalOpen} setOpen={setNewLeadModalOpen} />
+
 				<div className="mt-6 rounded-md border">
 					<Table>
 						<TableHeader>
@@ -54,6 +61,16 @@ const LeadsTable = () => {
 									<TableCell>{lead.email}</TableCell>
 									<TableCell>{lead.company}</TableCell>
 									<TableCell>
+										<Button
+											onClick={() => {
+												setEditLeadModalOpen(true)
+												setCurrentLead(lead)
+											}}
+											className="bg-blue-400 hover:bg-blue-600 cursor-pointer mr-1" size={"sm"}
+										>
+											<PencilIcon color="white" />
+										</Button>
+
 										<Button onClick={() => handleDelete(lead.id)} variant="destructive" className="bg-red-400 cursor-pointer" size={"sm"}>
 											<TrashIcon color="white" />
 										</Button>
@@ -66,7 +83,6 @@ const LeadsTable = () => {
 
 				<div className="mt-2 ml-auto">
 					<Button className="cursor-pointer" size="sm" onClick={() => setNewLeadModalOpen(true)}>+ Add Lead</Button>
-					<CreateNewLeadModal open={newLeadModalOpen} setOpen={setNewLeadModalOpen}/>
 				</div>
 			</div>
 		</>

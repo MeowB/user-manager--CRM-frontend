@@ -586,6 +586,34 @@ Enhance readability and visual structure of the Leads feature to make the interf
 > **Note:**  
 > Minor inconsistencies with the Users page were identified and will be addressed later as part of a broader UI consistency pass.
 
+### Session 23 — Lead Update (Edit) Functionality (Frontend Integration)
+
+Implementation of lead editing from the frontend, completing full CRUD functionality for the Leads feature.
+
+**Purpose:**  
+Allow users to modify existing leads through the UI and validate the complete update flow from frontend to database.
+
+#### Approach:
+1. Add edit button to each lead row
+2. Create an Edit Lead modal using existing dialog structure
+3. Pass selected lead data to modal
+4. Pre-fill form fields with current lead values
+5. Handle form submission using PATCH request to `/leads/:id`
+6. Fix issues related to React re-renders and form structure
+7. Validate update behavior through UI and database changes
+
+**Deliverables:**
+- Functional edit button in UI
+- Modal with pre-filled lead data
+- Successful PATCH request from frontend
+- Updated lead reflected in UI and database
+- Stable component behavior (no infinite re-renders)
+
+> **Note:**  
+> Existing modal and form patterns were reused to maintain consistency and minimize complexity. Minor bugs related to state and effects were resolved during implementation.
+
+
+
 
 ---
 ### Next Step Admin-Driven User Management & Credential Flow

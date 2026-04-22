@@ -9,13 +9,20 @@ import {
 } from "@/components/ui/dialog"
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import type { Lead } from "@/domain/lead"
 
 type NewLeadModalProps = {
 	open: boolean,
-	setOpen: (open: boolean) => void
+	setOpen: (open: boolean) => void,
+	lead?: Lead
 }
 
-const CreateNewLeadModal = ({ open, setOpen }: NewLeadModalProps) => {
+const EditLeadModal = ({ open, setOpen, lead }: NewLeadModalProps) => {
+	console.log(lead)
+
+	if(!lead) {
+		return null
+	}
 
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -35,8 +42,8 @@ const CreateNewLeadModal = ({ open, setOpen }: NewLeadModalProps) => {
 			return;
 		}
 
-		await fetch("http://localhost:3000/leads", {
-			method: "POST",
+		await fetch(`http://localhost:3000/leads/${lead.id}`, {
+			method: "PATCH",
 			headers: {
 				"Content-Type": "application/json"
 			},
@@ -51,24 +58,24 @@ const CreateNewLeadModal = ({ open, setOpen }: NewLeadModalProps) => {
 			<DialogContent className="sm:max-w-sm">
 				<form onSubmit={handleSubmit}>
 					<DialogHeader>
-						<DialogTitle>Add Lead</DialogTitle>
+						<DialogTitle>Edit Lead</DialogTitle>
 					</DialogHeader>
 					<FieldGroup className="mt-4">
 						<Field>
-							<Input id="name" name="name" placeholder="Name" />
+							<Input id="name" name="name" defaultValue={lead.name} />
 						</Field>
 						<Field>
-							<Input id="email" name="email" placeholder="email" />
+							<Input id="email" name="email" defaultValue={lead.email} />
 						</Field>
 						<Field>
-							<Input id="company" name="company" placeholder="company" />
+							<Input id="company" name="company" defaultValue={lead.company} />
 						</Field>
 					</FieldGroup>
 					<DialogFooter className="mt-4">
 						<DialogClose asChild>
 							<Button variant="outline">Cancel</Button>
 						</DialogClose>
-						<Button type="submit">Add lead</Button>
+						<Button type="submit">Edit lead</Button>
 					</DialogFooter>
 				</form>
 			</DialogContent>
@@ -76,4 +83,4 @@ const CreateNewLeadModal = ({ open, setOpen }: NewLeadModalProps) => {
 	)
 }
 
-export default CreateNewLeadModal
+export default EditLeadModal
