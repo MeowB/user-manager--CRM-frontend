@@ -612,6 +612,31 @@ Allow users to modify existing leads through the UI and validate the complete up
 > **Note:**  
 > Existing modal and form patterns were reused to maintain consistency and minimize complexity. Minor bugs related to state and effects were resolved during implementation.
 
+### Session 24 — Login Page (Frontend Entry Point)
+
+Implementation of a minimal login page to provide a clear entry point into the application.
+
+**Purpose:**  
+Introduce a realistic access flow (login → app) to improve first impression and usability for demo and portfolio purposes.
+
+#### Approach:
+1. Create a centered login form using existing UI components
+2. Add input fields for username and password
+3. Handle form submission with a simple redirect (fake authentication)
+4. Store a temporary login flag in localStorage
+5. Redirect users to the Leads page (main functional feature)
+
+**Deliverables:**
+- Clean and functional login page
+- Working form submission handler
+- Redirect to `/leads` after login
+- Improved application entry flow
+
+> **Note:**  
+> Authentication is intentionally mocked. Real authentication (JWT, backend validation) will be implemented in a later phase.
+
+
+
 
 
 
