@@ -7,10 +7,10 @@ import {
 	TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-
 import type { User } from "@/domain/user"
 import { useState } from "react"
 import CreateUserModal from "@/features/users/components/CreateUserModal"
+import { TrashIcon, PencilIcon } from "lucide-react";
 
 type UsersTableProps = {
 	users: User[],
@@ -60,8 +60,12 @@ const UsersTable = ({ users }: UsersTableProps) => {
 									</span>
 								</TableCell>
 								<TableCell className="flex gap-2">
-									<Button disabled className="cursor-pointer hover:border hover:border-gray-300 border-transparent border" size="sm" variant="secondary">Edit</Button>
-									<Button disabled className="cursor-pointer" size="sm" variant="destructive">Delete</Button>
+									<Button disabled className="cursor-pointer hover:border hover:border-gray-300 border-transparent border" size="sm" variant="secondary">
+										<PencilIcon />
+									</Button>
+									<Button disabled className="cursor-pointer" size="sm" variant="destructive">
+										<TrashIcon />
+									</Button>
 								</TableCell>
 							</TableRow>
 						))}

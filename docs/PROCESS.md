@@ -635,8 +635,32 @@ Introduce a realistic access flow (login → app) to improve first impression an
 > **Note:**  
 > Authentication is intentionally mocked. Real authentication (JWT, backend validation) will be implemented in a later phase.
 
+### Session 25 — App Walkthrough & Final Polish (Stability Check)
 
+Final walkthrough of the application to validate core flows and resolve minor UI inconsistencies before deployment.
 
+**Purpose:**  
+Ensure the application is stable, consistent, and ready for deployment by verifying real user interactions and fixing small visual issues.
+
+#### Approach:
+1. Perform full user flow walkthrough:
+   - Login → Leads page
+   - Create lead
+   - Edit lead
+   - Delete lead
+   - Navigation between pages
+2. Identify minor UI inconsistencies and layout issues
+3. Apply small fixes (spacing, alignment, consistency)
+4. Confirm absence of blocking bugs
+
+**Deliverables:**
+- Verified end-to-end functionality
+- No infinite loops or broken flows
+- Improved UI consistency across pages
+- Stable, demo-ready application state
+
+> **Note:**  
+> API calls remain inline for now. Refactoring to a dedicated API layer is planned for a future iteration after deployment.
 
 
 

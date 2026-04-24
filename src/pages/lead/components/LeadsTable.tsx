@@ -56,7 +56,7 @@ const LeadsTable = () => {
 						</TableHeader>
 						<TableBody>
 							{leads?.map((lead) => (
-								<TableRow key={lead.id}>
+								<TableRow key={lead.id} className="odd:bg-muted/50 hover:bg-muted">
 									<TableCell className="font-medium">{lead.name}</TableCell>
 									<TableCell>{lead.email}</TableCell>
 									<TableCell>{lead.company}</TableCell>
