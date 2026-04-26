@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { TrashIcon, PencilIcon } from "lucide-react";
 import CreateNewLeadModal from "./CreateNewLeadModal"
 import EditLeadModal from "./EditLeadModal";
+import { API_URL } from "@/api/api";
 
 
 const LeadsTable = () => {
@@ -21,12 +22,12 @@ const LeadsTable = () => {
 	const [leads, setLeads] = useState<Lead[]>()
 
 	const fetchLeads = async () => {
-		const res = await fetch("http://localhost:3000/leads")
+		const res = await fetch(`${API_URL}/leads`)
 		return res.json();
 	}
 
 	const handleDelete = async (id: String) => {
-		await fetch(`http://localhost:3000/leads/${id}`, {
+		await fetch(`${API_URL}/leads/${id}`, {
 			method: "DELETE",
 		})
 

@@ -10,6 +10,7 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import type { Lead } from "@/domain/lead"
+import { API_URL } from "@/api/api"
 
 type NewLeadModalProps = {
 	open: boolean,
@@ -20,7 +21,7 @@ type NewLeadModalProps = {
 const EditLeadModal = ({ open, setOpen, lead }: NewLeadModalProps) => {
 	console.log(lead)
 
-	if(!lead) {
+	if (!lead) {
 		return null
 	}
 
@@ -42,7 +43,7 @@ const EditLeadModal = ({ open, setOpen, lead }: NewLeadModalProps) => {
 			return;
 		}
 
-		await fetch(`http://localhost:3000/leads/${lead.id}`, {
+		await fetch(`${API_URL}/leads/${lead.id}`, {
 			method: "PATCH",
 			headers: {
 				"Content-Type": "application/json"

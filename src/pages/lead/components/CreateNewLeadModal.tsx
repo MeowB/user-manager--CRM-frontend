@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog"
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { API_URL } from "@/api/api"
 
 type NewLeadModalProps = {
 	open: boolean,
@@ -20,7 +21,7 @@ const CreateNewLeadModal = ({ open, setOpen }: NewLeadModalProps) => {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
-		console.log('submit')
+		console.log(`submit at: ${API_URL}`)
 
 		const formData = new FormData(e.currentTarget)
 
@@ -35,7 +36,7 @@ const CreateNewLeadModal = ({ open, setOpen }: NewLeadModalProps) => {
 			return;
 		}
 
-		await fetch("http://localhost:3000/leads", {
+		await fetch(`${API_URL}/leads`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json"
