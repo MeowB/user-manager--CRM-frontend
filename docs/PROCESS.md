@@ -662,80 +662,78 @@ Ensure the application is stable, consistent, and ready for deployment by verify
 > **Note:**  
 > API calls remain inline for now. Refactoring to a dedicated API layer is planned for a future iteration after deployment.
 
+### Session 26 — Deployment (Full-Stack App Live)
 
+Successfully deployed the CRM application (frontend + backend + database) to production.
 
----
-### Next Step Admin-Driven User Management & Credential Flow
-Introduce user management capabilities aligned with an internal CRM model, where administrators create and manage user accounts. This phase establishes secure credential handling and role-based access foundations without implementing public registration or email-based onboarding.
-
-**Goal:**
-Enable controlled creation of user accounts by administrators, enforce role and status constraints, and provide a secure password change mechanism ensuring users can safely manage their credentials after initial provisioning.
-
-**checklist:**
-- [ ] Define admin-only user creation route (POST /users)
-	- enforced via role check middlware
-- [ ] Accept user attributes (email, role, status)
-- [ ] Mark newly created users as requiring password change on first login
-- [ ] Hash all passwords before persistence
-- [ ] Prevent duplicate users via unique email constraint
-- [ ] Implement login endpoint (POST /auth/login)
-- [ ] Enforce mandatory password change on first login
-- [ ] Implement password change endpoint (POST /auth/change-password)
-- [ ] Restrict protected routes based on user role and status
-- [ ] Document user management and authentication routes
-
-## Authentication & Access — Implementation Breakdown
-
-This phase is intentionally split into small, self-contained sessions to reduce cognitive load and maintain steady progress. Each session is designed to be completed, committed, and stopped without pressure to continue.
+**Purpose:**  
+Make the application publicly accessible and production-ready to support portfolio demonstration and job applications.
 
 ---
 
-### Session 3 — Password Change Flow
+### Backend Deployment (Render)
 
-**Description:**  
-Introduce secure credential rotation for users, enforcing password updates when required.
-
-**Goal:**  
-Ensure users can change their password and that newly created accounts are forced to update credentials on first login.
-
-**Checklist:**
-- [ ] Add `mustChangePassword` logic to user model usage
-- [ ] Implement `POST /auth/change-password`
-- [ ] Validate current and new passwords
-- [ ] Hash and persist updated password
-- [ ] Clear password-change requirement after update
-
-**Commit message:**  
-`auth: add password change flow`
+- Deployed Node.js + Express API to Render
+- Configured environment variables:
+  - `DATABASE_URL` (Supabase Postgres with connection pooling)
+- Ensured server listens on `process.env.PORT`
+- Fixed TypeScript build issues (`tsconfig` mismatch)
+- Switched from running `.ts` files to compiled `/dist` output
+- Resolved Prisma client issues:
+  - Removed custom generator output
+  - Removed adapter-based setup
+  - Regenerated standard Prisma client
+- Verified deployment with `/health` endpoint:
+  - server status: OK
+  - database connection: OK
 
 ---
 
-### Session 4 — Role & Status Enforcement
+### Database (Supabase)
 
-**Description:**  
-Protect sensitive routes using role-based and status-based access control.
-
-**Goal:**  
-Prevent unauthorized or disabled users from accessing protected API endpoints.
-
-**Checklist:**
-- [ ] Implement basic authentication middleware
-- [ ] Enforce user status checks (active / disabled)
-- [ ] Enforce role-based restrictions where applicable
-- [ ] Apply middleware to protected routes
-- [ ] Return consistent authorization errors
-
-**Commit message:**  
-`auth: enforce role and status access control`
+- Created hosted PostgreSQL database
+- Configured Prisma connection string
+- Applied schema via `prisma migrate deploy`
+- Verified tables and connectivity
 
 ---
 
-> **Note:**  
-> Each session is intentionally independent. Completing and committing a single session is considered full progress for the day.
+### Frontend Deployment (Vercel)
 
-### Next Step — Leads Management (CRM Core)
+- Deployed React (Vite) application to Vercel
+- Configured environment variable:
+  - `VITE_API_URL` → Render backend URL
+- Replaced hardcoded localhost API calls with environment-based URL
+- Ensured environment variables are injected at build time
 
-- Define Lead model (id, name, email, status, etc.)
-- Create CRUD endpoints for leads
-- Link leads to users (owner / assigned)
-- Prepare for pipeline/status tracking
+---
+
+### Production Fixes
+
+- Fixed API base URL handling (centralized constant)
+- Resolved environment variable issues (missing redeploy)
+- Fixed SPA routing issue on Vercel:
+  - Added `vercel.json` rewrite to support client-side routing
+- Verified all routes work on reload (no 404)
+
+---
+
+### Final Validation
+
+- Full end-to-end test in production:
+  - login → redirect
+  - create lead
+  - edit lead
+  - delete lead
+- Confirmed frontend ↔ backend ↔ database integration
+- Application is now publicly accessible and fully functional
+
+---
+
+### Outcome
+
+- Live full-stack application deployed
+- Portfolio updated with working demo
+- Project is ready for demonstration and job applications
+
+> This marks the transition from development phase to application phase.
