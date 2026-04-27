@@ -3,18 +3,40 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Link, useNavigate } from "@tanstack/react-router"
 import type React from "react"
+import { API_URL } from "@/api/api"
 
 
 const LoginForm = () => {
 	const navigate = useNavigate()
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		console.log('submit')
 		e.preventDefault()
 
-		localStorage.setItem("isLoggedIn", "true")
+		const form = e.currentTarget
 
-		navigate({ to: "/leads" })
+		const email = (form.elements.namedItem("email") as HTMLInputElement).value
+		const password = (form.elements.namedItem("password") as HTMLInputElement).value
+
+		const res = await fetch(`${API_URL}/auth/login`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({ email, password })
+		})
+
+		if (!res.ok) {
+			console.log(res)
+			alert("Invalid credentials")
+		}
+
+		const data = await res.json()
+		localStorage.setItem("token", data.token)
+
+		if (data.token) {
+			navigate({ to: "/leads" })
+		}
 	}
 
 	return (
@@ -26,10 +48,10 @@ const LoginForm = () => {
 							Username
 						</label>
 						<Input
-							name="username"
-							id="username"
+							name="email"
+							id="email"
 							type="text"
-							placeholder="Username"
+							placeholder="Email"
 							className="w-full"
 						/>
 					</Field>
@@ -59,6 +81,17 @@ const LoginForm = () => {
 						Forgot Password?
 					</Link>
 				</div>
+				<Button
+					type="button"
+					size="sm"
+					onClick={() => {
+						(document.getElementById("email") as HTMLInputElement).value = "admin@test.com",
+						(document.getElementById("password") as HTMLInputElement).value = "password123"
+					}}
+					className="w-full mt-4"
+				>
+					Use demo account
+				</Button>
 				<p className="text-gray-500 text-xs mt-4">
 					Demo CRM — Leads management
 				</p>
