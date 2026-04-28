@@ -737,3 +737,32 @@ Make the application publicly accessible and production-ready to support portfol
 - Project is ready for demonstration and job applications
 
 > This marks the transition from development phase to application phase.
+
+---
+
+### Session 27 - Roadmap Documentation & Terminal Workflow
+
+Created a structured roadmap to plan the remaining consistency and completion work for the CRM application, then documented it as a generated PDF inside the frontend docs folder.
+
+**Purpose:**  
+Preserve a clear trace of the next development steps after deployment, while also improving the project documentation workflow using terminal-only tools.
+
+#### Approach:
+1. Reviewed the current frontend and backend codebase structure.
+2. Identified remaining consistency gaps between frontend, backend, authentication, users, and leads.
+3. Broke the remaining work into roughly one-hour coding sessions.
+4. Created a styled roadmap source document locally.
+5. Generated a PDF version using headless Chrome.
+6. Edited the source document from the terminal using Micro.
+7. Regenerated the PDF after edits.
+8. Moved the roadmap files into the frontend docs folder.
+9. Removed the temporary root-level docs folder to keep documentation inside the project structure.
+
+#### Deliverables:
+- `front-end/docs/finish-roadmap.pdf`
+- Roadmap split into one-hour implementation sessions.
+- Cleaner documentation structure with no unused root `docs` folder.
+- Improved terminal workflow for editing, regenerating, moving, and cleaning documentation files.
+
+> **Note:**  
+> This session focused on planning, documentation, and workflow hygiene rather than application code changes. The roadmap now provides the next implementation path for making the app more consistent.
