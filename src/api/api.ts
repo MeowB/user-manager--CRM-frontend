@@ -9,8 +9,20 @@ export const apiFetch = async (path: string, options: RequestInit = {}) => {
     headers.set("Authorization", `Bearer ${token}`)
   }
 
-  return fetch(`${API_URL}${path}`, {
+  const response = await fetch(`${API_URL}${path}`, {
     ...options,
     headers,
   })
+
+  if(response.status === 401) {
+    localStorage.removeItem("token")
+
+    window.location.href = "/login"
+  }
+
+  if(response.status === 204) {
+    return null
+  }
+
+  return 
 }
