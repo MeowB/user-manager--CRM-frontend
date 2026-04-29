@@ -12,8 +12,8 @@ import { Button } from "@/components/ui/button";
 import { TrashIcon, PencilIcon } from "lucide-react";
 import CreateNewLeadModal from "./CreateNewLeadModal"
 import EditLeadModal from "./EditLeadModal";
-import { API_URL } from "@/api/api";
 import { useNavigate } from "@tanstack/react-router";
+import { deleteLead, getLeads } from "@/api/leads";
 
 
 const LeadsTable = () => {
@@ -29,28 +29,21 @@ const LeadsTable = () => {
 		if (!token) {
 			localStorage.removeItem("token")
 			navigate({ to: '/login'})
+      return []
 		}
-		const res = await fetch(`${API_URL}/leads`, {
-			headers: {
-				authorization: `Bearer ${token}`
-			}
-		}
-		)
-		const data = await res.json()
+
+		const data =	getLeads()
 		console.log(data)
 		return data
 	}
 
-	const handleDelete = async (id: String) => {
-		await fetch(`${API_URL}/leads/${id}`, {
-			method: "DELETE",
-		})
-
+	const handleDelete = async (id: string) => {
+		await deleteLead(id)
 		fetchLeads().then(setLeads)
 	}
 
 	useEffect(() => {
-		fetchLeads().then(setLeads)
+		getLeads().then(setLeads)
 	}, [newLeadModalOpen, editLeadModalOpen])
 
 	return (

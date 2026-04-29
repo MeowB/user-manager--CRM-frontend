@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog"
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
-import { API_URL } from "@/api/api"
+import { createLead } from "@/api/leads"
 
 type NewLeadModalProps = {
 	open: boolean,
@@ -21,28 +21,24 @@ const CreateNewLeadModal = ({ open, setOpen }: NewLeadModalProps) => {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
-		console.log(`submit at: ${API_URL}`)
+    const formData= new FormData(e.currentTarget)
 
-		const formData = new FormData(e.currentTarget)
+    const name = formData.get("name")
+    const email= formData.get("email")
+    const company = formData.get("company")
 
-		const newLead = {
-			name: formData.get("name"),
-			email: formData.get("email"),
-			company: formData.get("company")
-		}
+    if(!name || !email || !company) {
+      alert("All fields are required")
+      return
+    }
 
-		if (!newLead.name || !newLead.email || !newLead.company) {
-			alert("All fields are required");
-			return;
-		}
+  const newLead = {
+      name,
+      email,
+      company
+    }
 
-		await fetch(`${API_URL}/leads`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(newLead)
-		})
+    await createLead(newLead)
 
 		setOpen(false)
 	}
