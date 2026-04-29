@@ -766,3 +766,30 @@ Preserve a clear trace of the next development steps after deployment, while als
 
 > **Note:**  
 > This session focused on planning, documentation, and workflow hygiene rather than application code changes. The roadmap now provides the next implementation path for making the app more consistent.
+
+---
+
+### Session 28 - Frontend API Auth Normalization
+
+Refactored frontend lead API calls so protected requests consistently send the JWT stored during login.
+
+**Purpose:**  
+Ensure all protected lead actions use the same authentication behavior and reduce duplicated request logic across UI components.
+
+#### Approach:
+1. Create a small `apiFetch` helper in `src/api/api.ts`
+2. Centralize API base URL handling and JWT attachment
+3. Create a dedicated `src/api/leads.ts` module for lead-specific API calls
+4. Replace inline `fetch` calls in lead components with typed API functions
+5. Fix form data typing by validating raw form values before creating the lead payload
+6. Build the frontend to confirm the refactor is TypeScript-safe
+7. Practice a keyboard-focused editing workflow using Neovim
+
+**Deliverables:**
+- Shared `apiFetch` helper for authenticated frontend requests
+- Lead API module with `getLeads`, `createLead`, `updateLead`, and `deleteLead`
+- Lead create, edit, delete, and fetch calls using the centralized API layer
+- Successful frontend build after refactor
+
+> **Note:**  
+> This helper is frontend-side request preparation, not backend middleware. It attaches the current JWT when an API call is made so protected backend routes receive the expected `Authorization` header.
