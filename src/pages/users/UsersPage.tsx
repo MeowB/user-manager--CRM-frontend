@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { getUsers } from "../../api/users.mock"
+import { getUsers } from "../../api/users"
 import UsersTable from "./components/UsersTable"
 
 const UsersPage = () => {
@@ -28,8 +28,8 @@ const UsersPage = () => {
 			<p className="text-sm text-muted-foreground mt-1">
 				List of registered users and their current status.
 			</p>
-			
-			<UsersTable users={usersResponse.data} />
+
+			<UsersTable users={usersResponse} />
 		</div>
 	)
 }

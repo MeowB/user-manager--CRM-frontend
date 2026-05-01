@@ -24,5 +24,5 @@ export const apiFetch = async (path: string, options: RequestInit = {}) => {
     return null
   }
 
-  return 
+  return response
 }

@@ -2,13 +2,16 @@ import { apiFetch } from "@/api/api"
 import type { Lead } from "@/domain/lead"
 
 export type LeadInput = {
-  name: FormDataEntryValue
-  email: FormDataEntryValue
-  company: FormDataEntryValue
+  name: string
+  email: string
+  company: string
 }
 
 export const getLeads = async ():Promise<Lead[]> => {
   const res = await apiFetch("/leads")
+  if (!res) {
+    return []
+  }
 
   return res.json()
 }

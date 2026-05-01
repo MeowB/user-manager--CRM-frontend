@@ -10,7 +10,7 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import type { Lead } from "@/domain/lead"
-import { API_URL } from "@/api/api"
+import { updateLead } from "@/api/leads"
 
 type NewLeadModalProps = {
 	open: boolean,
@@ -32,24 +32,21 @@ const EditLeadModal = ({ open, setOpen, lead }: NewLeadModalProps) => {
 
 		const formData = new FormData(e.currentTarget)
 
-		const newLead = {
-			name: formData.get("name"),
-			email: formData.get("email"),
-			company: formData.get("company")
-		}
+   const name = formData.get("name")
+   const email = formData.get("email")
+   const company = formData.get("company")
 
-		if (!newLead.name || !newLead.email || !newLead.company) {
-			alert("All fields are required");
-			return;
-		}
+  if(
+      typeof name !== "string" ||
+      typeof email !== "string" ||
+      typeof company !== "string"
+    ) {
+      alert("All field are required")
+      return
+    }
 
-		await fetch(`${API_URL}/leads/${lead.id}`, {
-			method: "PATCH",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(newLead)
-		})
+
+    await updateLead(lead.id, { name, email, company })
 
 		setOpen(false)
 	}

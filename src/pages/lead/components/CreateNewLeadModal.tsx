@@ -27,7 +27,11 @@ const CreateNewLeadModal = ({ open, setOpen }: NewLeadModalProps) => {
     const email= formData.get("email")
     const company = formData.get("company")
 
-    if(!name || !email || !company) {
+    if (
+      typeof name !== "string" ||
+      typeof email !== "string" ||
+      typeof company !== "string"
+    ) {
       alert("All fields are required")
       return
     }

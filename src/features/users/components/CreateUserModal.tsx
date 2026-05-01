@@ -23,6 +23,9 @@ import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { createUserSchema } from "../schemas/createUser.schema"
 import type { CreateUserFormValues } from "../schemas/createUser.schema"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { createUser } from "@/api/users"
+
 
 import { useEffect } from "react"
 
@@ -32,15 +35,28 @@ type CreateUserModalProps = {
 }
 
 export function CreateUserModal({ open, setOpen }: CreateUserModalProps) {
+
+  const queryClient = useQueryClient()
+
+  const createUserMutation = useMutation({
+    mutationFn: createUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"]})
+      setOpen(false)
+    },
+  })
+
 	const form = useForm<CreateUserFormValues>({
 		resolver: zodResolver(createUserSchema),
 		mode: "onBlur",
 		defaultValues: {
 			email: "",
-			role: "",
+      password: "",
+			role: "viewer",
 			status: "active"
 		},
 	})
+
 
 	useEffect(() => {
 		if (!open) {
@@ -55,7 +71,7 @@ export function CreateUserModal({ open, setOpen }: CreateUserModalProps) {
 			<DialogContent className="sm:max-w-106.25">
 				<form
 					onSubmit={form.handleSubmit((values) => {
-						console.log(values)
+						createUserMutation.mutate(values)
 					})}
 				>
 					<DialogHeader>
@@ -78,12 +94,23 @@ export function CreateUserModal({ open, setOpen }: CreateUserModalProps) {
 								<p className="text-sm text-destructive">{form.formState.errors.email.message}</p>
 							)}
 						</div>
+            {/* Password */}
+            <div>
+              <label htmlFor="password">Password</label>
+              <Input
+                type="password"
+                id="password"
+                {...form.register("password")}
+                className={`mt-2 ${form.formState.errors.password && "border-red-400"}`}
+              />
+            </div>
 						{/* Role */}
 						<div className="w-full">
 							<Label>Role</Label>
 
 							<Select
-								onValueChange={(value) => form.setValue("role", value)}
+                value={form.watch("role")}
+								onValueChange={(value) => form.setValue("role", value as CreateUserFormValues["role"])}
 							>
 								<SelectTrigger className="w-full mt-2">
 									<SelectValue placeholder="Select a role" />
@@ -97,7 +124,7 @@ export function CreateUserModal({ open, setOpen }: CreateUserModalProps) {
 									className="w-[--radix-select-trigger-width]"
 								>
 									<SelectItem value="admin">Admin</SelectItem>
-									<SelectItem value="user">User</SelectItem>
+									<SelectItem value="salesAgent">Sales Agent</SelectItem>
 									<SelectItem value="viewer">Viewer</SelectItem>
 								</SelectContent>
 							</Select>
@@ -135,7 +162,11 @@ export function CreateUserModal({ open, setOpen }: CreateUserModalProps) {
 						<DialogClose asChild>
 							<Button variant="outline">Cancel</Button>
 						</DialogClose>
-						<Button type="submit" disabled={!form.formState.isValid}>Create user</Button>
+						<Button
+              type="submit"
+              disabled={!form.formState.isValid || createUserMutation.isPending}>
+                {createUserMutation.isPending ? "Creating..." : "Create user"}
+            </Button>
 					</DialogFooter>
 				</form>
 			</DialogContent>
