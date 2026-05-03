@@ -742,7 +742,7 @@ Make the application publicly accessible and production-ready to support portfol
 
 ### Session 27 - Roadmap Documentation & Terminal Workflow
 
-Created a structured roadmap to plan the remaining consistency and completion work for the CRM application, then documented it as a generated PDF inside the frontend docs folder.
+Created a structured roadmap to plan the remaining consistency and completion work for the CRM application.
 
 **Purpose:**  
 Preserve a clear trace of the next development steps after deployment, while also improving the project documentation workflow using terminal-only tools.
@@ -752,14 +752,15 @@ Preserve a clear trace of the next development steps after deployment, while als
 2. Identified remaining consistency gaps between frontend, backend, authentication, users, and leads.
 3. Broke the remaining work into roughly one-hour coding sessions.
 4. Created a styled roadmap source document locally.
-5. Generated a PDF version using headless Chrome.
+5. Generated an export version using headless Chrome during the initial documentation pass.
 6. Edited the source document from the terminal using Micro.
-7. Regenerated the PDF after edits.
+7. Regenerated the export after edits.
 8. Moved the roadmap files into the frontend docs folder.
 9. Removed the temporary root-level docs folder to keep documentation inside the project structure.
+10. Later consolidated the roadmap to Markdown only so the portfolio docs stay lean and maintainable.
 
 #### Deliverables:
-- `front-end/docs/finish-roadmap.pdf`
+- `front-end/docs/finish-roadmap.md`
 - Roadmap split into one-hour implementation sessions.
 - Cleaner documentation structure with no unused root `docs` folder.
 - Improved terminal workflow for editing, regenerating, moving, and cleaning documentation files.
@@ -793,3 +794,52 @@ Ensure all protected lead actions use the same authentication behavior and reduc
 
 > **Note:**  
 > This helper is frontend-side request preparation, not backend middleware. It attaches the current JWT when an API call is made so protected backend routes receive the expected `Authorization` header.
+
+---
+
+### Session 29 - Users API Completion & Mock Cleanup
+
+Completed the remaining Users API work from the finish roadmap and removed the unused frontend users mock file after confirming the real API flow is active.
+
+**Purpose:**  
+Finish the user-management backend foundation, verify the frontend no longer depends on mock users data, and keep the roadmap checkpoint accurate for the next session.
+
+#### Approach:
+1. Confirmed the current Prisma `User` model fields:
+   - `id`
+   - `email`
+   - `password`
+   - `role`
+   - `status`
+   - `createdAt`
+   - `updatedAt`
+2. Confirmed the backend user enum values:
+   - `UserRole`: `admin`, `salesAgent`, `viewer`
+   - `UserStatus`: `active`, `disabled`
+3. Compared the backend users route against roadmap Step 3.
+4. Decided to implement the roadmap's optional `PATCH /users/:id` endpoint instead of leaving it out of scope.
+5. Added `PATCH /users/:id` support for role and status updates only.
+6. Kept user API responses filtered through `userSelect` so passwords are not returned.
+7. Added basic request checks for missing update fields, invalid role values, invalid status values, and missing users.
+8. Reviewed frontend users imports and confirmed the users page and create modal use `src/api/users.ts`.
+9. Confirmed no frontend source file imports `src/api/users.mock.ts`.
+10. Removed the unused users mock API file.
+11. Ran the backend build to verify the Users API change.
+
+#### Deliverables:
+- `PATCH /users/:id` endpoint in `back-end/src/modules/users/users.route.ts`
+- Role/status-only user update behavior
+- `404` handling for missing users during update
+- Removed unused `front-end/src/api/users.mock.ts`
+- `front-end/docs/PROCESS.md` updated with the current roadmap checkpoint
+- Successful backend build after the Users API change
+
+#### Roadmap Checkpoint:
+- Steps 1 and 2 are complete.
+- Step 3 is now complete: users can be listed, created with hashed passwords, returned without passwords, and updated through `PATCH /users/:id` for role/status changes.
+- Step 4 is complete from the users API side: frontend users code imports the real `src/api/users.ts`, and the unused mock file has been removed.
+- Step 5 is the next active implementation target: wire frontend user editing to `PATCH /users/:id`.
+- Step 6 follows after that: convert Leads data fetching and mutations to React Query.
+
+> **Note:**  
+> The roadmap allowed `PATCH /users/:id` as optional, but it was implemented now because it cleanly completes the Users API foundation before moving on to the Leads React Query work.
