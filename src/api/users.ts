@@ -8,6 +8,11 @@ export type CreateUserInput = {
   status: User["status"]
 }
 
+export type UpdateUserInput = {
+  role: User["role"]
+  status: User["status"]
+}
+
 export const getUsers = async (): Promise<User[]> => {
   const res = await apiFetch("/users")
 
@@ -34,6 +39,27 @@ export const createUser = async (input: CreateUserInput): Promise<User> => {
   if (!res.ok) {
     const error = await res.json()
     throw new Error(error.message || "Failed to create user")
+  }
+
+  return res.json()
+}
+
+export const updateUser = async (id: string, input: UpdateUserInput): Promise<User> => {
+  const res = await apiFetch(`/users/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(input)
+  })
+
+  if (!res) {
+    throw new Error("Failed to update user")
+  }
+
+  if (!res.ok) {
+    const error = await res.json()
+    throw new Error(error.message || "Failed to update user")
   }
 
   return res.json()
