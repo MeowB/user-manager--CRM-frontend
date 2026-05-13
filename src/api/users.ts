@@ -67,24 +67,3 @@ export const createUser = async (input: CreateUserInput): Promise<User> => {
 
   return res.json()
 }
-
-export const updateUser = async (id: string, input: UpdateUserInput): Promise<User> => {
-  const res = await apiFetch(`/users/${id}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(input)
-  })
-
-  if (!res) {
-    throw new Error("Failed to update user")
-  }
-
-  if (!res.ok) {
-    const error = await res.json()
-    throw new Error(error.message || "Failed to update user")
-  }
-
-  return res.json()
-}
