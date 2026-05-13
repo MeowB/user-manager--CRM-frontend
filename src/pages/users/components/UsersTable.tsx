@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import type { User } from "@/domain/user"
 import { useState } from "react"
 import CreateUserModal from "@/features/users/components/CreateUserModal"
+import EditUserModal from "@/features/users/components/EditUserModal"
 import { TrashIcon, PencilIcon } from "lucide-react";
 
 type UsersTableProps = {
@@ -18,6 +19,8 @@ type UsersTableProps = {
 
 const UsersTable = ({ users }: UsersTableProps) => {
 	const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false)
+	const [isEditOpen, setIsEditOpen] = useState<boolean>(false)
+	const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
 	return (
 		<div className="w-full flex flex-col">
@@ -60,8 +63,15 @@ const UsersTable = ({ users }: UsersTableProps) => {
 									</span>
 								</TableCell>
 								<TableCell className="flex gap-2">
-									<Button disabled className="cursor-pointer hover:border hover:border-gray-300 border-transparent border" size="sm" variant="secondary">
-										<PencilIcon />
+									<Button
+										className="bg-blue-400 hover:bg-blue-600 cursor-pointer mr-1"
+										size="sm"
+										onClick={() => {
+											setSelectedUser(user)
+											setIsEditOpen(true)
+										}}
+									>
+										<PencilIcon color="white" />
 									</Button>
 									<Button disabled className="cursor-pointer" size="sm" variant="destructive">
 										<TrashIcon />
@@ -76,6 +86,11 @@ const UsersTable = ({ users }: UsersTableProps) => {
 			<div className="mt-2 ml-auto">
 				<Button className="cursor-pointer" size="sm" onClick={() => setIsCreateOpen(true)}>+ Add User</Button>
 				<CreateUserModal open={isCreateOpen} setOpen={setIsCreateOpen}/>
+				<EditUserModal
+					open={isEditOpen}
+					setOpen={setIsEditOpen}
+					user={selectedUser}
+				/>
 			</div>
 		</div>
 	)
