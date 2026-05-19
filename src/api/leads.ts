@@ -1,3 +1,8 @@
+/*
+ * Leads API client.
+ * Keeps lead request/response handling out of UI components.
+ */
+
 import { apiFetch } from "@/api/api"
 import type { Lead } from "@/domain/lead"
 

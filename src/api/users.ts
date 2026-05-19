@@ -1,3 +1,8 @@
+/*
+ * Users API client.
+ * Defines typed user requests and normalizes API error handling for mutations.
+ */
+
 import { apiFetch } from "./api"
 import type { User } from "@/domain/user"
 

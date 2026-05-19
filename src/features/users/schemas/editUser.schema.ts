@@ -1,3 +1,8 @@
+/*
+ * User editing form schema.
+ * Limits frontend updates to role and status changes.
+ */
+
 import { z } from "zod"
 
 export const editUserSchema = z.object({

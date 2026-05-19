@@ -1,3 +1,8 @@
+/*
+ * User creation form schema.
+ * Defines valid role/status values and required credentials for new users.
+ */
+
 import { z } from "zod"
 
 export const createUserSchema = z.object({

@@ -1,3 +1,8 @@
+/*
+ * Base skeleton primitive.
+ * Provides a small themed loading block for composing placeholder UIs.
+ */
+
 import { cn } from "@/lib/utils";
 
 const Skeleton = ({className, ...props}: React.ComponentProps<"div">) => {

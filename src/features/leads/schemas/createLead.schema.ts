@@ -1,3 +1,8 @@
+/*
+ * Lead creation form schema.
+ * Validates browser form data and normalizes empty company values to null.
+ */
+
 import { z } from "zod"
 
 export const createLeadSchema = z.object({

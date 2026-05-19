@@ -1,3 +1,8 @@
+/*
+ * Reusable table-shaped loading placeholder.
+ * Keeps list pages visually stable while TanStack Query is fetching data.
+ */
+
 import { Skeleton } from "@/components/ui/skeleton";
 
 type TableSkeletonProps = {

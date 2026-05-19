@@ -1,3 +1,8 @@
+/*
+ * Frontend Lead domain contract.
+ * Mirrors the fields returned by the backend Lead API.
+ */
+
 export type Lead = {
 	id: string
 	name: string
