@@ -75,6 +75,19 @@ Later phase:
 - More complete role permission UI.
 - Automated smoke tests and broader verification.
 
+### Phase 4 - Production Readiness And Portfolio Polish
+
+Final portfolio-readiness phase:
+
+- Automated smoke/API checks.
+- Seed script for realistic demo data.
+- Demo credentials documented safely.
+- Screenshots or short demo video in the README.
+- CI checks for frontend typecheck and backend build.
+- Accessibility pass for core workflows.
+- Deployment documentation.
+- Architecture overview covering auth flow, data model, routing, and API boundaries.
+
 ## 3. User Roles
 
 ### Admin
@@ -429,3 +442,9 @@ The original direction is still valid. The app is on track as a junior full-stac
 - iterative documentation
 
 The main adjustment is scope clarity. Deals, pipeline, dashboard KPIs, and activities are not all part of one small finish pass. They should be phased so each layer has a stable data model and UI purpose before the next one is added.
+
+The long-term direction is:
+
+- Phase 2 adds product depth with ownership, deals, pipeline, and KPIs.
+- Phase 3 adds workflow depth with activities, timelines, permissions, and advanced CRM behavior.
+- Phase 4 adds production readiness and portfolio polish so the project is easy to demo, evaluate, and maintain.
