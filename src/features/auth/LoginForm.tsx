@@ -10,7 +10,6 @@ const LoginForm = () => {
 	const navigate = useNavigate()
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		console.log('submit')
 		e.preventDefault()
 
 		const form = e.currentTarget
@@ -27,8 +26,8 @@ const LoginForm = () => {
 		})
 
 		if (!res.ok) {
-			console.log(res)
 			alert("Invalid credentials")
+			return
 		}
 
 		const data = await res.json()
