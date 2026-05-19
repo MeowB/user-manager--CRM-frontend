@@ -1,4 +1,4 @@
-import LeadsTable from "./components/LeadsTable"
+import LeadsTable from "@/features/leads/components/LeadsTable"
 
 const LeadPage = () => {
 

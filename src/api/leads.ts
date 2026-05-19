@@ -4,7 +4,7 @@ import type { Lead } from "@/domain/lead"
 export type LeadInput = {
   name: string
   email: string
-  company: string
+  company: string | null
 }
 
 export const getLeads = async ():Promise<Lead[]> => {

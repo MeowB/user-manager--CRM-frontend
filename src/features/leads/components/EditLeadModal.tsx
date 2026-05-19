@@ -13,6 +13,8 @@ import type { Lead } from "@/domain/lead"
 import { updateLead } from "@/api/leads"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import type { LeadInput } from "@/api/leads"
+import { useState } from "react"
+import { editLeadSchema } from "../schemas/editLead.schema"
 
 type NewLeadModalProps = {
 	open: boolean,
@@ -22,6 +24,7 @@ type NewLeadModalProps = {
 
 const EditLeadModal = ({ open, setOpen, lead }: NewLeadModalProps) => {
 	const queryClient = useQueryClient()
+	const [formError, setFormError] = useState<string | null>(null)
 	const updateLeadMutation = useMutation({
 		mutationFn: (input: LeadInput) => {
 			if (!lead) {
@@ -32,6 +35,7 @@ const EditLeadModal = ({ open, setOpen, lead }: NewLeadModalProps) => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["leads"] })
+			setFormError(null)
 			setOpen(false)
 		}
 	})
@@ -42,24 +46,23 @@ const EditLeadModal = ({ open, setOpen, lead }: NewLeadModalProps) => {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
+		setFormError(null)
 
 		const formData = new FormData(e.currentTarget)
 
-		const name = formData.get("name")
-		const email = formData.get("email")
-		const company = formData.get("company")
+		const result = editLeadSchema.safeParse({
+			name: formData.get("name"),
+			email: formData.get("email"),
+			company: formData.get("company"),
+		})
 
-		if (
-			typeof name !== "string" ||
-			typeof email !== "string" ||
-			typeof company !== "string"
-		) {
-			alert("All field are required")
+		if (!result.success) {
+			setFormError(result.error.issues[0]?.message ?? "Invalid lead details")
 			return
 		}
 
 
-		updateLeadMutation.mutate({ name, email, company })
+		updateLeadMutation.mutate(result.data)
 	}
 
 	return (
@@ -77,9 +80,14 @@ const EditLeadModal = ({ open, setOpen, lead }: NewLeadModalProps) => {
 							<Input id="email" name="email" defaultValue={lead.email} />
 						</Field>
 						<Field>
-							<Input id="company" name="company" defaultValue={lead.company} />
+							<Input id="company" name="company" defaultValue={lead.company ?? ""} />
 						</Field>
 					</FieldGroup>
+					{formError && (
+						<p className="mt-4 text-sm text-destructive">
+							{formError}
+						</p>
+					)}
 					{updateLeadMutation.isError && (
 						<p className="mt-4 text-sm text-destructive">
 							{(updateLeadMutation.error as Error).message}

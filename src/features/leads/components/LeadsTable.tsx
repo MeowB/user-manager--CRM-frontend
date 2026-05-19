@@ -82,7 +82,7 @@ const LeadsTable = () => {
 								<TableRow key={lead.id} className="odd:bg-muted/50 hover:bg-muted">
 									<TableCell className="font-medium">{lead.name}</TableCell>
 									<TableCell>{lead.email}</TableCell>
-									<TableCell>{lead.company}</TableCell>
+									<TableCell>{lead.company ?? "-"}</TableCell>
 									<TableCell>
 										<Button
 											onClick={() => {

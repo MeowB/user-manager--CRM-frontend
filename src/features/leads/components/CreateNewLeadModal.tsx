@@ -11,6 +11,8 @@ import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { createLead } from "@/api/leads"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useState } from "react"
+import { createLeadSchema } from "../schemas/createLead.schema"
 
 type NewLeadModalProps = {
 	open: boolean,
@@ -19,11 +21,13 @@ type NewLeadModalProps = {
 
 const CreateNewLeadModal = ({ open, setOpen }: NewLeadModalProps) => {
 	const queryClient = useQueryClient()
+	const [formError, setFormError] = useState<string | null>(null)
 
 	const createLeadMutation = useMutation({
 		mutationFn: createLead,
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["leads"] })
+			setFormError(null)
 			setOpen(false)
 		}
 	})
@@ -31,28 +35,21 @@ const CreateNewLeadModal = ({ open, setOpen }: NewLeadModalProps) => {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
+		setFormError(null)
 		const formData = new FormData(e.currentTarget)
 
-		const name = formData.get("name")
-		const email = formData.get("email")
-		const company = formData.get("company")
+		const result = createLeadSchema.safeParse({
+			name: formData.get("name"),
+			email: formData.get("email"),
+			company: formData.get("company"),
+		})
 
-		if (
-			typeof name !== "string" ||
-			typeof email !== "string" ||
-			typeof company !== "string"
-		) {
-			alert("All fields are required")
+		if (!result.success) {
+			setFormError(result.error.issues[0]?.message ?? "Invalid lead details")
 			return
 		}
 
-		const newLead = {
-			name,
-			email,
-			company
-		}
-
-		createLeadMutation.mutate(newLead)
+		createLeadMutation.mutate(result.data)
 	}
 
 	return (
@@ -73,6 +70,11 @@ const CreateNewLeadModal = ({ open, setOpen }: NewLeadModalProps) => {
 							<Input id="company" name="company" placeholder="company" />
 						</Field>
 					</FieldGroup>
+					{formError && (
+						<p className="mt-4 text-sm text-destructive">
+							{formError}
+						</p>
+					)}
 					{createLeadMutation.isError && (
 						<p className="mt-4 text-sm text-destructive">
 							{(createLeadMutation.error as Error).message}
