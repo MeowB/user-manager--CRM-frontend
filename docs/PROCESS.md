@@ -906,3 +906,138 @@ Make Leads data fetching and mutations more predictable by centralizing server-s
 
 > **Note:**  
 > This step completes the main technical goal of Roadmap Step 6. Leads and Users now follow the same TanStack Query server-state pattern.
+
+---
+
+### Session 31 - Shared Lead Contracts And Feature Structure
+
+Aligned the frontend Leads contract with the backend Prisma model and cleaned up the Leads folder structure.
+
+**Purpose:**  
+Make frontend lead types reflect the API response shape and keep route pages separate from feature implementation details.
+
+#### Approach:
+1. Standardized the Leads route folder to `src/pages/leads`.
+2. Moved Leads table and modal components into `src/features/leads/components`.
+3. Updated route imports after the folder move.
+4. Updated the frontend `Lead` type so `company` can be `string | null`.
+5. Added `createdAt` and `updatedAt` to the frontend `Lead` domain type.
+6. Updated lead input types so optional company values can be sent as `null`.
+7. Added Zod schemas for lead create and edit forms.
+8. Converted empty company form input to `null`.
+9. Updated the table and edit modal to safely display/edit nullable company values.
+
+#### Deliverables:
+- Consistent `pages/leads` and `features/leads` folder structure.
+- Frontend `Lead` type aligned with the backend model.
+- Lead create/edit schemas under `src/features/leads/schemas`.
+- Nullable company handling in list, create, and edit flows.
+- TypeScript check passed after the changes.
+
+---
+
+### Session 32 - Backend Request Validation
+
+Added Zod validation to backend write routes so invalid request bodies return intentional `400` responses.
+
+**Purpose:**  
+Protect database writes from malformed client input and make API errors easier to understand.
+
+#### Approach:
+1. Installed Zod in the backend.
+2. Added create/update schemas for Leads.
+3. Validated `POST /leads` with `createLeadSchema`.
+4. Validated `PATCH /leads/:id` with `updateLeadSchema`.
+5. Added login validation for `POST /auth/login`.
+6. Added user create validation for `POST /users`.
+7. Added user update validation for `PATCH /users/:id`.
+8. Replaced manual role/status checks with Zod enums.
+9. Kept route-specific Prisma handling for duplicate emails and missing records.
+
+#### Deliverables:
+- Backend Zod schemas for auth, leads, and users.
+- `400` responses for invalid request bodies.
+- Partial-update schemas for lead and user patch routes.
+- Backend build passed after validation changes.
+
+---
+
+### Session 33 - Centralized Backend Error Handling
+
+Added Express error middleware and reduced repeated generic `500` handling in backend routes.
+
+**Purpose:**  
+Keep route handlers focused on API behavior while centralizing unexpected server errors in one middleware.
+
+#### Approach:
+1. Added `errorMiddleware` under `src/middleware`.
+2. Registered the middleware in `app.ts` after the main router.
+3. Removed generic-only `try/catch` blocks from simple read/create routes.
+4. Kept route-local handling for known Prisma errors:
+   - `P2025` for missing leads/users.
+   - `P2002` for duplicate user email.
+5. Re-threw unexpected errors so the central middleware can handle them.
+
+#### Deliverables:
+- Central backend error middleware.
+- Cleaner Leads and Users routes.
+- Preserved `404` and `409` API behavior for known Prisma cases.
+- Backend build passed after the refactor.
+
+---
+
+### Session 34 - Frontend Auth Guard And Logout
+
+Added a minimal frontend auth guard and logout flow to align navigation with protected backend routes.
+
+**Purpose:**  
+Prevent protected pages from rendering without a token and give users a clear way to end their session.
+
+#### Approach:
+1. Added a `beforeLoad` guard to the protected layout route.
+2. Redirected users without a token to `/login`.
+3. Added a logout button to the sidebar.
+4. Cleared the stored token on logout.
+5. Redirected to `/login` after logout.
+6. Improved TypeScript path alias configuration for editor support.
+7. Adjusted sidebar layout so logout sits at the bottom.
+
+#### Deliverables:
+- Protected layout guard for dashboard, users, and leads.
+- Sidebar logout button.
+- Token clearing on logout.
+- Improved `@/` path alias config.
+- Frontend TypeScript check passed.
+
+---
+
+### Session 35 - CRUD UX Polish
+
+Improved the user-facing CRUD experience across Leads, Users, and login.
+
+**Purpose:**  
+Make the app feel more complete by improving loading states, destructive-action safety, feedback, and page layout.
+
+#### Approach:
+1. Added a wider, centered page shell for Leads and Users.
+2. Moved primary create actions into page headers.
+3. Added skeleton loading components for table states.
+4. Installed and configured Sonner toasts.
+5. Added success/error toasts for lead and user create, edit, and delete actions.
+6. Added backend and frontend support for deleting users.
+7. Added user delete confirmation modal.
+8. Added lead delete confirmation modal.
+9. Replaced the remaining login `alert()` with inline error text and a toast.
+10. Removed remaining frontend debug logs.
+
+#### Deliverables:
+- Better Leads and Users page layout.
+- Shared `TableSkeleton` and base `Skeleton` component.
+- Sonner toaster configured at the app root.
+- Confirmation modals for destructive lead/user deletion.
+- User delete is now wired end to end.
+- No remaining frontend `alert()`, `console.log`, or `console.error`.
+- Frontend and backend checks passed during the polish pass.
+
+> **Note:**  
+> This session completes Roadmap Step 11. Step 12 follows with README and environment example updates.
