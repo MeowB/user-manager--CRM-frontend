@@ -56,7 +56,7 @@ function Layout() {
 						</div>
 					</nav>
 				</header>
-				<main className="p-2">
+				<main className="flex-1">
 					<Outlet />
 				</main>
 			</div>

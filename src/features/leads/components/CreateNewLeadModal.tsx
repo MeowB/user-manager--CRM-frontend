@@ -13,6 +13,7 @@ import { createLead } from "@/api/leads"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { createLeadSchema } from "../schemas/createLead.schema"
+import { toast } from "sonner"
 
 type NewLeadModalProps = {
 	open: boolean,
@@ -29,6 +30,10 @@ const CreateNewLeadModal = ({ open, setOpen }: NewLeadModalProps) => {
 			queryClient.invalidateQueries({ queryKey: ["leads"] })
 			setFormError(null)
 			setOpen(false)
+			toast.success("Lead created")
+		},
+		onError: (error) => {
+			toast.error((error as Error).message)
 		}
 	})
 

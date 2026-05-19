@@ -4,13 +4,17 @@ import { Button } from "@/components/ui/button"
 import { Link, useNavigate } from "@tanstack/react-router"
 import type React from "react"
 import { API_URL } from "@/api/api"
+import { useState } from "react"
+import { toast } from "sonner"
 
 
 const LoginForm = () => {
 	const navigate = useNavigate()
+	const [loginError, setLoginError] = useState<string | null>(null)
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
+		setLoginError(null)
 
 		const form = e.currentTarget
 
@@ -26,7 +30,8 @@ const LoginForm = () => {
 		})
 
 		if (!res.ok) {
-			alert("Invalid credentials")
+			setLoginError("Invalid credentials")
+			toast.error("Invalid credentials")
 			return
 		}
 
@@ -80,6 +85,11 @@ const LoginForm = () => {
 						Forgot Password?
 					</Link>
 				</div>
+				{loginError && (
+					<p className="mt-4 text-sm text-destructive">
+						{loginError}
+					</p>
+				)}
 				<Button
 					type="button"
 					size="sm"

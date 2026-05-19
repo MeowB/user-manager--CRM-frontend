@@ -9,8 +9,8 @@ import {
 import { Button } from "@/components/ui/button"
 import type { User } from "@/domain/user"
 import { useState } from "react"
-import CreateUserModal from "@/features/users/components/CreateUserModal"
 import EditUserModal from "@/features/users/components/EditUserModal"
+import DeleteUserModal from "@/features/users/components/DeleteUserModal"
 import { TrashIcon, PencilIcon } from "lucide-react";
 
 type UsersTableProps = {
@@ -18,13 +18,13 @@ type UsersTableProps = {
 }
 
 const UsersTable = ({ users }: UsersTableProps) => {
-	const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false)
 	const [isEditOpen, setIsEditOpen] = useState<boolean>(false)
+	const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
 	const [selectedUser, setSelectedUser] = useState<User | null>(null)
 
 	return (
 		<div className="w-full flex flex-col">
-			<div className="mt-6 rounded-md border">
+			<div className="rounded-md border bg-background">
 				<Table>
 					<TableHeader>
 						<TableRow>
@@ -73,7 +73,15 @@ const UsersTable = ({ users }: UsersTableProps) => {
 									>
 										<PencilIcon color="white" />
 									</Button>
-									<Button disabled className="cursor-pointer" size="sm" variant="destructive">
+									<Button
+										className="cursor-pointer"
+										size="sm"
+										variant="destructive"
+										onClick={() => {
+											setSelectedUser(user)
+											setIsDeleteOpen(true)
+										}}
+									>
 										<TrashIcon />
 									</Button>
 								</TableCell>
@@ -83,12 +91,15 @@ const UsersTable = ({ users }: UsersTableProps) => {
 
 				</Table>
 			</div>
-			<div className="mt-2 ml-auto">
-				<Button className="cursor-pointer" size="sm" onClick={() => setIsCreateOpen(true)}>+ Add User</Button>
-				<CreateUserModal open={isCreateOpen} setOpen={setIsCreateOpen}/>
+			<div>
 				<EditUserModal
 					open={isEditOpen}
 					setOpen={setIsEditOpen}
+					user={selectedUser}
+				/>
+				<DeleteUserModal
+					open={isDeleteOpen}
+					setOpen={setIsDeleteOpen}
 					user={selectedUser}
 				/>
 			</div>

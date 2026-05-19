@@ -25,6 +25,7 @@ import { createUserSchema } from "../schemas/createUser.schema"
 import type { CreateUserFormValues } from "../schemas/createUser.schema"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { createUser } from "@/api/users"
+import { toast } from "sonner"
 
 
 import { useEffect } from "react"
@@ -43,6 +44,10 @@ export function CreateUserModal({ open, setOpen }: CreateUserModalProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"]})
       setOpen(false)
+      toast.success("User created")
+    },
+    onError: (error) => {
+      toast.error((error as Error).message)
     },
   })
 

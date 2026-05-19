@@ -8,23 +8,21 @@ import {
 } from "@/components/ui/table"
 import {
 	useQuery,
-	useMutation,
-	useQueryClient
 } from "@tanstack/react-query"
 import { useState } from "react"
 import type { Lead } from "@/domain/lead";
 import { Button } from "@/components/ui/button";
 import { TrashIcon, PencilIcon } from "lucide-react";
-import CreateNewLeadModal from "./CreateNewLeadModal"
 import EditLeadModal from "./EditLeadModal";
-import { deleteLead, getLeads } from "@/api/leads";
+import DeleteLeadModal from "./DeleteLeadModal";
+import { getLeads } from "@/api/leads";
+import { TableSkeleton } from "@/components/TableSkeleton";
 
 
 const LeadsTable = () => {
-	const [newLeadModalOpen, setNewLeadModalOpen] = useState<boolean>(false)
 	const [editLeadModalOpen, setEditLeadModalOpen] = useState<boolean>(false)
+	const [deleteLeadModalOpen, setDeleteLeadModalOpen] = useState<boolean>(false)
 	const [currentLead, setCurrentLead] = useState<Lead>()
-	const queryClient = useQueryClient()
 	const {
 		data: leads = [],
 		isLoading,
@@ -34,15 +32,9 @@ const LeadsTable = () => {
 		queryKey: ["leads"],
 		queryFn: getLeads,
 	})
-	const deleteLeadMutation = useMutation({
-		mutationFn: deleteLead,
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["leads"] })
-		}
-	})
 
 	if(isLoading) {
-		return <p>Loading Leads...</p>
+		return <TableSkeleton columns={4} />
 	}
 
 	if (isError) {
@@ -55,16 +47,16 @@ const LeadsTable = () => {
 			<div className="w-full flex flex-col">
 
 				<EditLeadModal open={editLeadModalOpen} setOpen={setEditLeadModalOpen} lead={currentLead} />
-				<CreateNewLeadModal open={newLeadModalOpen} setOpen={setNewLeadModalOpen} />
+				<DeleteLeadModal open={deleteLeadModalOpen} setOpen={setDeleteLeadModalOpen} lead={currentLead} />
 
-				<div className="mt-6 rounded-md border">
+				<div className="rounded-md border bg-background">
 					<Table>
 						<TableHeader>
 							<TableRow>
 								<TableHead className="w-25">Name</TableHead>
 								<TableHead>Email</TableHead>
 								<TableHead>Company</TableHead>
-								<TableHead>Action</TableHead>
+								<TableHead className="w-[1%] text-center">Actions</TableHead>
 							</TableRow>
 						</TableHeader>
 						<TableBody>
@@ -83,20 +75,23 @@ const LeadsTable = () => {
 									<TableCell className="font-medium">{lead.name}</TableCell>
 									<TableCell>{lead.email}</TableCell>
 									<TableCell>{lead.company ?? "-"}</TableCell>
-									<TableCell>
+									<TableCell className="flex justify-end gap-2">
 										<Button
 											onClick={() => {
 												setEditLeadModalOpen(true)
 												setCurrentLead(lead)
 											}}
-											className="bg-blue-400 hover:bg-blue-600 cursor-pointer mr-1" size={"sm"}
+											className="bg-blue-400 hover:bg-blue-600 cursor-pointer"
+											size={"sm"}
 										>
 											<PencilIcon color="white" />
 										</Button>
 
 										<Button
-											onClick={() => deleteLeadMutation.mutate(lead.id)}
-											disabled={deleteLeadMutation.isPending}
+											onClick={() => {
+												setCurrentLead(lead)
+												setDeleteLeadModalOpen(true)
+											}}
 											variant="destructive"
 											className="bg-red-400 cursor-pointer"
 											size={"sm"}
@@ -109,15 +104,6 @@ const LeadsTable = () => {
 						</TableBody>
 					</Table>
 				</div>
-
-				<div className="mt-2 ml-auto">
-					<Button className="cursor-pointer" size="sm" onClick={() => setNewLeadModalOpen(true)}>+ Add Lead</Button>
-				</div>
-				{deleteLeadMutation.isError && (
-					<p className="mt-2 text-sm text-destructive">
-						{(deleteLeadMutation.error as Error).message}
-					</p>
-				)}
 			</div>
 		</>
 	)

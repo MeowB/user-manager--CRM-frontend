@@ -15,6 +15,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import type { LeadInput } from "@/api/leads"
 import { useState } from "react"
 import { editLeadSchema } from "../schemas/editLead.schema"
+import { toast } from "sonner"
 
 type NewLeadModalProps = {
 	open: boolean,
@@ -37,6 +38,10 @@ const EditLeadModal = ({ open, setOpen, lead }: NewLeadModalProps) => {
 			queryClient.invalidateQueries({ queryKey: ["leads"] })
 			setFormError(null)
 			setOpen(false)
+			toast.success("Lead updated")
+		},
+		onError: (error) => {
+			toast.error((error as Error).message)
 		}
 	})
 

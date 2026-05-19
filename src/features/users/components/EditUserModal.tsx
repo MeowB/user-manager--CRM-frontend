@@ -24,6 +24,7 @@ import { useEffect } from "react"
 import { Controller, useForm } from "react-hook-form"
 import { editUserSchema } from "../schemas/editUser.schema"
 import type { EditUserFormValues } from "../schemas/editUser.schema"
+import { toast } from "sonner"
 
 type EditUserModalProps = {
   open: boolean
@@ -60,6 +61,10 @@ export function EditUserModal({ open, setOpen, user }: EditUserModalProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] })
       setOpen(false)
+      toast.success("User updated")
+    },
+    onError: (error) => {
+      toast.error((error as Error).message)
     },
   })
 
