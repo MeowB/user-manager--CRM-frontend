@@ -1041,3 +1041,80 @@ Make the app feel more complete by improving loading states, destructive-action 
 
 > **Note:**  
 > This session completes Roadmap Step 11. Step 12 follows with README and environment example updates.
+
+---
+
+### Session 36 - Documentation And Environment Examples
+
+Updated setup documentation and environment examples so the project is easier to run and understand.
+
+**Purpose:**  
+Make the current full-stack state reproducible without reverse-engineering required environment variables, scripts, or available routes.
+
+#### Approach:
+1. Added a frontend `.env.example`.
+2. Replaced the misspelled backend `.env.exemple` with `.env.example`.
+3. Documented backend environment variables:
+   - `DATABASE_URL`
+   - `JWT_SECRET`
+   - `PORT`
+4. Rewrote the backend README with setup, scripts, routes, validation, and error-handling notes.
+5. Rewrote the frontend README with setup, features, architecture, and current UX behavior.
+6. Verified frontend TypeScript and backend build after the docs pass.
+
+#### Deliverables:
+- `front-end/.env.example`
+- `back-end/.env.example`
+- Updated frontend README.
+- Updated backend README.
+- Removed misspelled backend `.env.exemple`.
+- Frontend `npx tsc -b` passed.
+- Backend `npm run build` passed.
+
+---
+
+### Session 37 - Architecture Orientation Comments
+
+Added concise file headers to architectural and contract files across the frontend and backend.
+
+**Purpose:**  
+Improve codebase navigation as the project grows without adding noisy comments to every component.
+
+#### Approach:
+1. Added short headers to frontend API client files.
+2. Added short headers to frontend domain contract files.
+3. Added short headers to shared skeleton components.
+4. Added short headers to frontend form schema files.
+5. Added short headers to backend app, server, router, Prisma, and middleware files.
+6. Added short headers to backend request schema files.
+7. Avoided commenting obvious modal/table components.
+
+#### Deliverables:
+- Orientation comments for key frontend architecture files.
+- Orientation comments for key backend architecture files.
+- Frontend `npx tsc -b` passed.
+- Backend `npm run build` passed.
+
+---
+
+### Session 38 - Smoke Checklist And Roadmap Completion
+
+Added a lightweight smoke checklist to close the current finish roadmap without introducing premature automation.
+
+**Purpose:**  
+Document the minimum verification flow for the current app while leaving full automated smoke tests for a later, larger phase.
+
+#### Approach:
+1. Created a smoke checklist under frontend docs.
+2. Listed backend and frontend build checks.
+3. Listed core API checks for health, login, leads, and users.
+4. Listed frontend checks for auth guard, logout, CRUD feedback, and confirmation modals.
+5. Kept this as documentation rather than a script because the app is still small and changing quickly.
+
+#### Deliverables:
+- `front-end/docs/smoke-checklist.md`
+- Manual verification checklist for builds, API behavior, auth, and CRUD UI.
+- Current finish roadmap completed through Step 13.
+
+> **Note:**  
+> Automated smoke tests remain a strong candidate for the next roadmap once the app grows beyond the current CRM foundation.
