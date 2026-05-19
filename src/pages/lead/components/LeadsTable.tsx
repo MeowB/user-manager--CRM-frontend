@@ -6,13 +6,17 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table"
-import { useEffect, useState } from "react"
+import {
+	useQuery,
+	useMutation,
+	useQueryClient
+} from "@tanstack/react-query"
+import { useState } from "react"
 import type { Lead } from "@/domain/lead";
 import { Button } from "@/components/ui/button";
 import { TrashIcon, PencilIcon } from "lucide-react";
 import CreateNewLeadModal from "./CreateNewLeadModal"
 import EditLeadModal from "./EditLeadModal";
-import { useNavigate } from "@tanstack/react-router";
 import { deleteLead, getLeads } from "@/api/leads";
 
 
@@ -20,32 +24,32 @@ const LeadsTable = () => {
 	const [newLeadModalOpen, setNewLeadModalOpen] = useState<boolean>(false)
 	const [editLeadModalOpen, setEditLeadModalOpen] = useState<boolean>(false)
 	const [currentLead, setCurrentLead] = useState<Lead>()
-	const [leads, setLeads] = useState<Lead[]>()
-
-	const navigate = useNavigate()
-
-	const fetchLeads = async () => {
-		const token = localStorage.getItem("token")
-		if (!token) {
-			localStorage.removeItem("token")
-			navigate({ to: '/login'})
-      return []
+	const queryClient = useQueryClient()
+	const {
+		data: leads = [],
+		isLoading,
+		isError,
+		error
+	} = useQuery({
+		queryKey: ["leads"],
+		queryFn: getLeads,
+	})
+	const deleteLeadMutation = useMutation({
+		mutationFn: deleteLead,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["leads"] })
 		}
+	})
 
-		const data =	getLeads()
-		console.log(data)
-		return data
+	if(isLoading) {
+		return <p>Loading Leads...</p>
 	}
 
-	const handleDelete = async (id: string) => {
-		await deleteLead(id)
-		fetchLeads().then(setLeads)
+	if (isError) {
+		return <p>Error: {(error as Error).message}</p>
 	}
 
-	useEffect(() => {
-		getLeads().then(setLeads)
-	}, [newLeadModalOpen, editLeadModalOpen])
-
+	
 	return (
 		<>
 			<div className="w-full flex flex-col">
@@ -64,7 +68,17 @@ const LeadsTable = () => {
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{leads?.map((lead) => (
+							{leads.length === 0 && (
+								<TableRow>
+									<TableCell
+										colSpan={4}
+										className="px-4 py-6 text-center text-sm text-muted-foreground"
+									>
+										No leads found
+									</TableCell>
+								</TableRow>
+							)}
+							{leads.map((lead) => (
 								<TableRow key={lead.id} className="odd:bg-muted/50 hover:bg-muted">
 									<TableCell className="font-medium">{lead.name}</TableCell>
 									<TableCell>{lead.email}</TableCell>
@@ -80,7 +94,13 @@ const LeadsTable = () => {
 											<PencilIcon color="white" />
 										</Button>
 
-										<Button onClick={() => handleDelete(lead.id)} variant="destructive" className="bg-red-400 cursor-pointer" size={"sm"}>
+										<Button
+											onClick={() => deleteLeadMutation.mutate(lead.id)}
+											disabled={deleteLeadMutation.isPending}
+											variant="destructive"
+											className="bg-red-400 cursor-pointer"
+											size={"sm"}
+										>
 											<TrashIcon color="white" />
 										</Button>
 									</TableCell>
@@ -93,6 +113,11 @@ const LeadsTable = () => {
 				<div className="mt-2 ml-auto">
 					<Button className="cursor-pointer" size="sm" onClick={() => setNewLeadModalOpen(true)}>+ Add Lead</Button>
 				</div>
+				{deleteLeadMutation.isError && (
+					<p className="mt-2 text-sm text-destructive">
+						{(deleteLeadMutation.error as Error).message}
+					</p>
+				)}
 			</div>
 		</>
 	)

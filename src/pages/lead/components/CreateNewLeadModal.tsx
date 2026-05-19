@@ -10,6 +10,7 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { createLead } from "@/api/leads"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 type NewLeadModalProps = {
 	open: boolean,
@@ -17,34 +18,41 @@ type NewLeadModalProps = {
 }
 
 const CreateNewLeadModal = ({ open, setOpen }: NewLeadModalProps) => {
+	const queryClient = useQueryClient()
+
+	const createLeadMutation = useMutation({
+		mutationFn: createLead,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["leads"] })
+			setOpen(false)
+		}
+	})
 
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
-    const formData= new FormData(e.currentTarget)
+		const formData = new FormData(e.currentTarget)
 
-    const name = formData.get("name")
-    const email= formData.get("email")
-    const company = formData.get("company")
+		const name = formData.get("name")
+		const email = formData.get("email")
+		const company = formData.get("company")
 
-    if (
-      typeof name !== "string" ||
-      typeof email !== "string" ||
-      typeof company !== "string"
-    ) {
-      alert("All fields are required")
-      return
-    }
+		if (
+			typeof name !== "string" ||
+			typeof email !== "string" ||
+			typeof company !== "string"
+		) {
+			alert("All fields are required")
+			return
+		}
 
-  const newLead = {
-      name,
-      email,
-      company
-    }
+		const newLead = {
+			name,
+			email,
+			company
+		}
 
-    await createLead(newLead)
-
-		setOpen(false)
+		createLeadMutation.mutate(newLead)
 	}
 
 	return (
@@ -65,11 +73,18 @@ const CreateNewLeadModal = ({ open, setOpen }: NewLeadModalProps) => {
 							<Input id="company" name="company" placeholder="company" />
 						</Field>
 					</FieldGroup>
+					{createLeadMutation.isError && (
+						<p className="mt-4 text-sm text-destructive">
+							{(createLeadMutation.error as Error).message}
+						</p>
+					)}
 					<DialogFooter className="mt-4">
 						<DialogClose asChild>
 							<Button variant="outline">Cancel</Button>
 						</DialogClose>
-						<Button type="submit">Add lead</Button>
+						<Button type="submit" disabled={createLeadMutation.isPending}>
+							{createLeadMutation.isPending ? "Adding..." : "Add Lead"}
+						</Button>
 					</DialogFooter>
 				</form>
 			</DialogContent>

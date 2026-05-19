@@ -843,3 +843,66 @@ Finish the user-management backend foundation, verify the frontend no longer dep
 
 > **Note:**  
 > The roadmap allowed `PATCH /users/:id` as optional, but it was implemented now because it cleanly completes the Users API foundation before moving on to the Leads React Query work.
+
+---
+
+### Current Checkpoint - 19/05/2026
+
+Reviewed the existing frontend code against the finish roadmap before starting the next implementation session.
+
+**Purpose:**  
+Re-establish the actual project state so the next work can return to a clear, step-oriented process.
+
+#### Confirmed Current State:
+- Step 1 is complete: frontend API auth is centralized through `src/api/api.ts`.
+- Step 2 is complete: protected backend route shape is in place.
+- Step 3 is complete: the Users API supports listing, creation, password-safe responses, and role/status updates.
+- Step 4 is complete: the frontend Users page uses the real users API instead of mock data.
+- Step 5 is complete: frontend user editing is already wired to `PATCH /users/:id`.
+
+#### Step 5 Verification:
+- `src/api/users.ts` includes `updateUser(id, input)`.
+- `src/features/users/components/EditUserModal.tsx` uses a React Query mutation.
+- Successful user updates invalidate the `["users"]` query.
+- The edit modal only submits `role` and `status`.
+- `src/pages/users/components/UsersTable.tsx` opens the edit modal with the selected user.
+- The backend `PATCH /users/:id` route accepts and validates role/status updates.
+
+#### Next Active Step:
+- Step 6: Make Lead data fetching consistent by moving Leads fetching and mutations to React Query.
+
+> **Note:**  
+> `finish-roadmap.md` was intentionally left unchanged. This checkpoint records actual current status without editing the roadmap source.
+
+---
+
+### Session 30 - Leads Data Fetching With TanStack Query
+
+Converted the Leads feature from manual state/effect fetching to TanStack Query so it follows the same server-state pattern as the Users feature.
+
+**Purpose:**  
+Make Leads data fetching and mutations more predictable by centralizing server-state behavior around query keys, mutations, and invalidation instead of manually refetching after modal changes.
+
+#### Approach:
+1. Replaced manual `useState`/`useEffect` lead fetching in `LeadsTable` with `useQuery`.
+2. Used the existing `getLeads` API function as the `["leads"]` query function.
+3. Converted lead deletion to a `useMutation`.
+4. Converted lead creation to a `useMutation` inside the create modal.
+5. Converted lead editing to a `useMutation` inside the edit modal.
+6. Invalidated the `["leads"]` query after successful create, edit, and delete mutations.
+7. Added response guard checks to lead API mutation functions so failed HTTP responses throw errors.
+8. Added basic polish for empty, pending, and error states.
+9. Ran the TypeScript build check to verify the refactor.
+
+#### Deliverables:
+- `LeadsTable` now uses TanStack Query `useQuery` for the leads list.
+- Lead create, edit, and delete actions now use `useMutation`.
+- Successful mutations refresh the list through `queryClient.invalidateQueries({ queryKey: ["leads"] })`.
+- `src/api/leads.ts` now throws on failed create, update, and delete responses.
+- Empty state added for an empty leads list.
+- Submit/delete controls are disabled while relevant mutations are pending.
+- Inline mutation errors are shown for create, edit, and delete failures.
+- `npx tsc -b` passed after the changes.
+
+> **Note:**  
+> This step completes the main technical goal of Roadmap Step 6. Leads and Users now follow the same TanStack Query server-state pattern.

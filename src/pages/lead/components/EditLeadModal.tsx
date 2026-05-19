@@ -11,6 +11,8 @@ import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import type { Lead } from "@/domain/lead"
 import { updateLead } from "@/api/leads"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import type { LeadInput } from "@/api/leads"
 
 type NewLeadModalProps = {
 	open: boolean,
@@ -19,36 +21,45 @@ type NewLeadModalProps = {
 }
 
 const EditLeadModal = ({ open, setOpen, lead }: NewLeadModalProps) => {
-	console.log(lead)
+	const queryClient = useQueryClient()
+	const updateLeadMutation = useMutation({
+		mutationFn: (input: LeadInput) => {
+			if (!lead) {
+				throw new Error("No lead selected")
+			}
+
+			return updateLead(lead.id, input)
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["leads"] })
+			setOpen(false)
+		}
+	})
 
 	if (!lead) {
 		return null
 	}
 
-
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
-		console.log('submit')
 
 		const formData = new FormData(e.currentTarget)
 
-   const name = formData.get("name")
-   const email = formData.get("email")
-   const company = formData.get("company")
+		const name = formData.get("name")
+		const email = formData.get("email")
+		const company = formData.get("company")
 
-  if(
-      typeof name !== "string" ||
-      typeof email !== "string" ||
-      typeof company !== "string"
-    ) {
-      alert("All field are required")
-      return
-    }
+		if (
+			typeof name !== "string" ||
+			typeof email !== "string" ||
+			typeof company !== "string"
+		) {
+			alert("All field are required")
+			return
+		}
 
 
-    await updateLead(lead.id, { name, email, company })
-
-		setOpen(false)
+		updateLeadMutation.mutate({ name, email, company })
 	}
 
 	return (
@@ -69,11 +80,18 @@ const EditLeadModal = ({ open, setOpen, lead }: NewLeadModalProps) => {
 							<Input id="company" name="company" defaultValue={lead.company} />
 						</Field>
 					</FieldGroup>
+					{updateLeadMutation.isError && (
+						<p className="mt-4 text-sm text-destructive">
+							{(updateLeadMutation.error as Error).message}
+						</p>
+					)}
 					<DialogFooter className="mt-4">
 						<DialogClose asChild>
 							<Button variant="outline">Cancel</Button>
 						</DialogClose>
-						<Button type="submit">Edit lead</Button>
+						<Button type="submit" disabled={updateLeadMutation.isPending}>
+							{updateLeadMutation.isPending ? "Saving..." : "Edit lead"}
+						</Button>
 					</DialogFooter>
 				</form>
 			</DialogContent>
