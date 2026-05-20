@@ -41,7 +41,32 @@ Frontend:
 
 **Outcome:** The app starts behaving like a multi-user CRM.
 
-## 3. Add Lead Detail Page
+## 3. Add Demo Seed Data
+
+**Goal:** Create realistic demo data once ownership and role rules exist, while keeping the database easy to reset during development.
+
+Backend:
+- Add `back-end/prisma/seed.ts`.
+- Create demo users for each role:
+  - Admin
+  - Sales Agent
+  - Viewer
+- Create sample leads assigned to different owners.
+- Keep `ownerId` nullable for now so older leads and early Phase 2 migrations continue to work.
+- Add a backend seed script, for example `npm run seed`.
+
+Data shape:
+- Use clear demo identities that make ownership and permissions easy to test.
+- Include enough lead variety to support detail pages, deals, pipeline views, and dashboard KPIs later.
+- Avoid adding deals in this seed step until the Deal model exists.
+
+Later cleanup:
+- After routes mirror the authorization rules and seed data covers the role scenarios, make `Lead.ownerId` required.
+- Update the seed so every lead has an owner before removing nullable ownership.
+
+**Outcome:** Role-based behavior can be tested against repeatable demo data instead of manual one-off records.
+
+## 4. Add Lead Detail Page
 
 **Goal:** Create a central workspace for one lead.
 
@@ -90,7 +115,7 @@ Frontend:
 
 **Outcome:** Leads become inspectable records, not just table rows.
 
-## 4. Extend Lead Fields For CRM Use
+## 5. Extend Lead Fields For CRM Use
 
 **Goal:** Bring Leads closer to the spec before deals and dashboard depend on them.
 
@@ -111,7 +136,7 @@ Frontend:
 
 **Outcome:** Leads contain enough business data to support filtering, dashboard KPIs, and conversion workflow.
 
-## 5. Add Deal Model
+## 6. Add Deal Model
 
 **Goal:** Add the core sales opportunity entity.
 
@@ -140,7 +165,7 @@ enum DealStage {
 
 **Outcome:** Deals can exist as opportunities linked to leads.
 
-## 6. Add Deal API CRUD
+## 7. Add Deal API CRUD
 
 **Goal:** Build the backend foundation for deals.
 
@@ -166,7 +191,7 @@ Auth:
 
 **Outcome:** Deals have a complete backend API.
 
-## 7. Add Frontend Deal Contracts
+## 8. Add Frontend Deal Contracts
 
 **Goal:** Prepare the frontend to consume deal data cleanly.
 
@@ -188,7 +213,7 @@ Include:
 
 **Outcome:** Deals follow the same frontend architecture as Leads and Users.
 
-## 8. Add "Create Deal From Lead"
+## 9. Add "Create Deal From Lead"
 
 **Goal:** Make deal creation happen from the lead workflow.
 
@@ -203,7 +228,7 @@ On Lead Detail:
 
 **Outcome:** Users can convert lead interest into a tracked opportunity.
 
-## 9. Show Linked Deals On Lead Detail
+## 10. Show Linked Deals On Lead Detail
 
 **Goal:** Make the relationship between leads and deals visible.
 
@@ -219,7 +244,7 @@ Frontend:
 
 **Outcome:** The Lead Detail page becomes a real CRM workspace.
 
-## 10. Add Activity Timeline Placeholder
+## 11. Add Activity Timeline Placeholder
 
 **Goal:** Reserve space for future Activities without building the full feature yet.
 
@@ -243,7 +268,7 @@ Keep them static and non-data-backed for now.
 
 **Outcome:** The UI is designed with the future Activities module in mind.
 
-## 11. Add Deals Page
+## 12. Add Deals Page
 
 **Goal:** Give users a list view for all deals.
 
@@ -275,7 +300,7 @@ Use:
 
 **Outcome:** Deals can be managed outside the lead detail page too.
 
-## 12. Add Pipeline Page
+## 13. Add Pipeline Page
 
 **Goal:** Visualize deals by stage.
 
@@ -310,7 +335,7 @@ Start simple:
 
 **Outcome:** The app gets its first real CRM pipeline view.
 
-## 13. Add Dashboard KPIs
+## 14. Add Dashboard KPIs
 
 **Goal:** Make the dashboard meaningful using real data.
 
@@ -345,7 +370,7 @@ Dashboard
 
 **Outcome:** Dashboard becomes useful instead of decorative.
 
-## 14. Update Docs And Smoke Checklist
+## 15. Update Docs And Smoke Checklist
 
 **Goal:** Close Phase 2 cleanly.
 
@@ -370,17 +395,18 @@ Add smoke checks:
 
 1. Lead ownership data model
 2. Role-aware lead access
-3. Lead detail page shell
-4. Lead fields: status, priority, budget
-5. Deal model and migration
-6. Deal API CRUD
-7. Frontend deal contracts/API/schemas
-8. Create deal from lead
-9. Linked deals on lead detail
-10. Deals list page
-11. Pipeline page
-12. Dashboard KPIs
-13. Docs and smoke checklist
+3. Demo seed data
+4. Lead detail page shell
+5. Lead fields: status, priority, budget
+6. Deal model and migration
+7. Deal API CRUD
+8. Frontend deal contracts/API/schemas
+9. Create deal from lead
+10. Linked deals on lead detail
+11. Deals list page
+12. Pipeline page
+13. Dashboard KPIs
+14. Docs and smoke checklist
 
 ## Scope Boundary
 

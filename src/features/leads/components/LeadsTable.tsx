@@ -34,7 +34,7 @@ const LeadsTable = () => {
 	})
 
 	if(isLoading) {
-		return <TableSkeleton columns={4} />
+		return <TableSkeleton columns={5} />
 	}
 
 	if (isError) {
@@ -56,6 +56,7 @@ const LeadsTable = () => {
 								<TableHead className="w-25">Name</TableHead>
 								<TableHead>Email</TableHead>
 								<TableHead>Company</TableHead>
+								<TableHead>Owner</TableHead>
 								<TableHead className="w-[1%] text-center">Actions</TableHead>
 							</TableRow>
 						</TableHeader>
@@ -63,7 +64,7 @@ const LeadsTable = () => {
 							{leads.length === 0 && (
 								<TableRow>
 									<TableCell
-										colSpan={4}
+										colSpan={5}
 										className="px-4 py-6 text-center text-sm text-muted-foreground"
 									>
 										No leads found
@@ -75,6 +76,7 @@ const LeadsTable = () => {
 									<TableCell className="font-medium">{lead.name}</TableCell>
 									<TableCell>{lead.email}</TableCell>
 									<TableCell>{lead.company ?? "-"}</TableCell>
+									<TableCell>{lead.owner?.email ?? "Unassigned"}</TableCell>
 									<TableCell className="flex justify-end gap-2">
 										<Button
 											onClick={() => {
