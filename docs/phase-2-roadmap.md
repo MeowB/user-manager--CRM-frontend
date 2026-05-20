@@ -26,21 +26,45 @@ Frontend:
 
 **Goal:** Make roles start to matter beyond UI labels.
 
-Rules:
-- Admin: can see all leads.
-- Sales Agent: can see only their own leads.
-- Viewer: can see leads but not mutate them, or can see all read-only depending on the final product choice.
+Permission matrix:
+
+Admin:
+- Dashboard: all KPIs, including team/member-level metrics later.
+- Leads: read all, create, edit all, delete all.
+- Users: read, create, edit, and delete.
+- Unassigned leads: visible.
+- Future ownership controls: assign and reassign lead owners.
+
+Sales Agent:
+- Dashboard: own operational KPIs later.
+- Leads: read own leads only.
+- Leads: create leads assigned to self.
+- Leads: edit own leads.
+- Leads: cannot delete leads.
+- Users: no access.
+- Unassigned leads: not visible unless assigned by an admin later.
+
+Viewer:
+- Dashboard: broad aggregate KPIs only.
+- Leads: no access to lead list or lead detail.
+- Users: no access.
+- Mutations: none.
 
 Backend:
-- Use `req.user` from `authMiddleware`.
-- Filter lead queries based on role.
-- Restrict create/edit/delete actions based on role.
+- Add role awareness to authenticated requests.
+- Filter lead queries by role.
+- Return `403` for forbidden lead and user access.
+- Enforce admin-only lead deletion.
+- Enforce viewer read-only/dashboard-only behavior on the backend, not only in the UI.
 
 Frontend:
+- Fetch or decode the current user's role.
+- Hide nav links the current role cannot access.
 - Hide or disable actions the current role cannot use.
+- Redirect or show a forbidden state when a user manually opens a route they cannot access.
 - Keep backend as the real source of permission enforcement.
 
-**Outcome:** The app starts behaving like a multi-user CRM.
+**Outcome:** The app starts behaving like a multi-user CRM with realistic operational, admin, and stakeholder boundaries.
 
 ## 3. Add Demo Seed Data
 
