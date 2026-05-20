@@ -7,19 +7,20 @@ Purpose: move the CRM from basic lead/user management into a real sales workflow
 **Goal:** Connect leads to users so the CRM starts reflecting real team ownership.
 
 Backend:
-- Add `ownerId` to `Lead`.
+- Add nullable `ownerId` to `Lead`.
 - Add Prisma relation:
   - `User` has many `Lead`s.
-  - `Lead` belongs to one `User` owner.
+  - `Lead` optionally belongs to one `User` owner.
 - On lead creation, assign `ownerId` from the JWT payload.
 - Include safe owner info in lead responses.
+- Keep unassigned leads as a valid business state.
 
 Frontend:
 - Update `Lead` domain type.
 - Show lead owner in the Leads table or later on Lead Detail.
 - Keep owner assignment automatic for now.
 
-**Outcome:** Leads are no longer floating records; they belong to a user.
+**Outcome:** Leads can belong to a user while still supporting an intentional "Unassigned" state.
 
 ## 2. Add Role-Aware Lead Access
 
@@ -52,7 +53,7 @@ Backend:
   - Sales Agent
   - Viewer
 - Create sample leads assigned to different owners.
-- Keep `ownerId` nullable for now so older leads and early Phase 2 migrations continue to work.
+- Keep `ownerId` nullable because unassigned leads are a valid CRM state.
 - Add a backend seed script, for example `npm run seed`.
 
 Data shape:
@@ -60,9 +61,10 @@ Data shape:
 - Include enough lead variety to support detail pages, deals, pipeline views, and dashboard KPIs later.
 - Avoid adding deals in this seed step until the Deal model exists.
 
-Later cleanup:
-- After routes mirror the authorization rules and seed data covers the role scenarios, make `Lead.ownerId` required.
-- Update the seed so every lead has an owner before removing nullable ownership.
+Later ownership controls:
+- Add an admin-only way to assign or reassign lead ownership.
+- Keep deleted-user behavior as `ON DELETE SET NULL` so leads remain in the CRM if an owner account is removed.
+- Add unassigned leads to admin review/filter workflows when filtering is introduced.
 
 **Outcome:** Role-based behavior can be tested against repeatable demo data instead of manual one-off records.
 
