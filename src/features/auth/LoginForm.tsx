@@ -94,7 +94,7 @@ const LoginForm = () => {
 					type="button"
 					size="sm"
 					onClick={() => {
-						(document.getElementById("email") as HTMLInputElement).value = "admin@exemple.com",
+						(document.getElementById("email") as HTMLInputElement).value = "admin@example.com",
 						(document.getElementById("password") as HTMLInputElement).value = "password123"
 					}}
 					className="w-full mt-4"
