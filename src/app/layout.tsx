@@ -11,10 +11,12 @@
 import { createRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
 import rootRoute from "./rootRoute";
 import { Button } from "@/components/ui/button"
+import { getCurrentUserRole } from "@/lib/auth";
 
 
 function Layout() {
 	const navigate = useNavigate()
+	const role = getCurrentUserRole()
 
 	const handleLogout = () => {
 		localStorage.removeItem("token")
@@ -33,18 +35,22 @@ function Layout() {
 							className="px-2 py-1 text-muted-foreground">
 							Dashboard
 						</Link>
-						<Link
-							to='/users'
-							activeProps={{ className: "text-foreground font-medium" }}
-							className="px-2 py-1 text-muted-foreground">
-							Users
-						</Link>
-						<Link
-							to='/leads'
-							activeProps={{ className: "text-foreground font-medium" }}
-							className="px-2 py-1 text-muted-foreground">
-							Leads
-						</Link>
+						{role === "admin" && (
+							<Link
+								to='/users'
+								activeProps={{ className: "text-foreground font-medium" }}
+								className="px-2 py-1 text-muted-foreground">
+								Users
+							</Link>
+						)}
+						{role !== "viewer" && (
+							<Link
+								to='/leads'
+								activeProps={{ className: "text-foreground font-medium" }}
+								className="px-2 py-1 text-muted-foreground">
+								Leads
+							</Link>
+						)}
 
 						<div className="mt-auto w-full">
 							<Button

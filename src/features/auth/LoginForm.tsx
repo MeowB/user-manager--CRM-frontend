@@ -6,11 +6,27 @@ import type React from "react"
 import { API_URL } from "@/api/api"
 import { useState } from "react"
 import { toast } from "sonner"
+import { getCurrentUserRole } from "@/lib/auth"
 
 
 const LoginForm = () => {
 	const navigate = useNavigate()
 	const [loginError, setLoginError] = useState<string | null>(null)
+	const demoAccounts = [
+		{ label: "Admin", email: "admin@example.com", password: "CrmDemo!2026" },
+		{ label: "Sales Agent", email: "sales@example.com", password: "CrmDemo!2026" },
+		{ label: "Viewer", email: "viewer@example.com", password: "CrmDemo!2026" },
+	]
+
+	const fillDemoAccount = (email: string, password: string) => {
+		const emailInput = document.getElementById("email") as HTMLInputElement | null
+		const passwordInput = document.getElementById("password") as HTMLInputElement | null
+
+		if (!emailInput || !passwordInput) return
+
+		emailInput.value = email
+		passwordInput.value = password
+	}
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
@@ -39,7 +55,8 @@ const LoginForm = () => {
 		localStorage.setItem("token", data.token)
 
 		if (data.token) {
-			navigate({ to: "/leads" })
+			const role = getCurrentUserRole()
+			navigate({ to: role === "viewer" ? "/dashboard" : "/leads" })
 		}
 	}
 
@@ -90,17 +107,29 @@ const LoginForm = () => {
 						{loginError}
 					</p>
 				)}
-				<Button
-					type="button"
-					size="sm"
-					onClick={() => {
-						(document.getElementById("email") as HTMLInputElement).value = "admin@example.com",
-						(document.getElementById("password") as HTMLInputElement).value = "password123"
-					}}
-					className="w-full mt-4"
-				>
-					Use demo account
-				</Button>
+				<div className="relative mt-5">
+					<div className="absolute inset-0 flex items-center" aria-hidden="true">
+						<div className="w-full border-t border-gray-200" />
+					</div>
+					<div className="relative flex justify-center">
+						<span className="bg-white px-2 text-[11px] font-medium text-gray-500">
+							Demo accounts
+						</span>
+					</div>
+				</div>
+				<div className="mt-4 grid grid-cols-3 gap-2">
+					{demoAccounts.map((account) => (
+						<Button
+							key={account.email}
+							type="button"
+							size="sm"
+							variant="outline"
+							onClick={() => fillDemoAccount(account.email, account.password)}
+						>
+							{account.label}
+						</Button>
+					))}
+				</div>
 				<p className="text-gray-500 text-xs mt-4">
 					Demo CRM — Leads management
 				</p>
