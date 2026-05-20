@@ -1118,3 +1118,90 @@ Document the minimum verification flow for the current app while leaving full au
 
 > **Note:**  
 > Automated smoke tests remain a strong candidate for the next roadmap once the app grows beyond the current CRM foundation.
+
+---
+
+### Session 39 - Phase 2 Roadmap And Lead Ownership
+
+Started Phase 2 by clarifying the next product direction and implementing lead ownership across the stack.
+
+**Purpose:**  
+Move leads from standalone records toward a real multi-user CRM model where leads can belong to team members while still supporting an intentional unassigned state.
+
+#### Approach:
+1. Reviewed `PROCESS.md` and the Phase 2 roadmap to identify the next active step.
+2. Renamed the Phase 2 roadmap file to `front-end/docs/phase-2-roadmap.md`.
+3. Added a dedicated demo seed data step to the roadmap after role-aware access.
+4. Updated the roadmap so nullable `ownerId` is a deliberate product choice, not temporary migration debt.
+5. Added `ownerId` and an optional owner relation to the backend Prisma `Lead` model.
+6. Added the reverse `User.leads` relation.
+7. Generated and applied a local Prisma migration for lead ownership.
+8. Updated lead creation so the backend assigns `ownerId` from the authenticated JWT user.
+9. Included safe owner data in lead API responses.
+10. Updated the frontend `Lead` domain type with nullable `ownerId` and owner data.
+11. Added an Owner column to the Leads table with an `Unassigned` fallback.
+12. Aligned the Supabase database with the new migration and verified ownership behavior in development and production.
+
+#### Deliverables:
+- Shorter Phase 2 roadmap filename.
+- Phase 2 roadmap updated with demo seeding and nullable ownership decisions.
+- Nullable `Lead.ownerId` relation added to Prisma.
+- Local migration for lead ownership.
+- Lead creation assigns ownership from the JWT.
+- Lead API responses include safe owner info.
+- Frontend lead type includes `ownerId` and nullable owner data.
+- Leads table displays owner email or `Unassigned`.
+- Backend build passed.
+- Frontend TypeScript check passed.
+- Lead ownership verified in development and production.
+
+> **Note:**  
+> Lead ownership remains nullable by design. If a user account is removed, their leads should remain in the CRM as unassigned records rather than being deleted.
+
+---
+
+### Session 40 - Role-Aware Backend And Frontend Access
+
+Implemented the first role-aware permission layer for users and leads, then reflected those permissions in the frontend navigation.
+
+**Purpose:**  
+Make the existing `admin`, `salesAgent`, and `viewer` roles meaningful by enforcing backend authorization and reducing frontend access to pages/actions the current role cannot use.
+
+#### Approach:
+1. Clarified the permission matrix for Phase 2:
+   - Admin has full user and lead access.
+   - Sales agents can read, create, and edit their own leads, but cannot delete leads.
+   - Viewers are dashboard-only and cannot access users or leads.
+2. Updated the roadmap with the agreed permission matrix.
+3. Added `role` to the JWT payload returned from login.
+4. Updated auth middleware to validate role-bearing tokens.
+5. Added an admin-only router guard for `/users`.
+6. Added a viewer-blocking router guard for `/leads`.
+7. Filtered `GET /leads` so sales agents only receive their own leads.
+8. Protected `GET /leads/:id` and `PATCH /leads/:id` so sales agents cannot access or edit someone else's lead.
+9. Restricted `DELETE /leads/:id` to admins only.
+10. Extracted lead authorization logic to `leads.permissions.ts`.
+11. Added role-specific demo login buttons to the login page.
+12. Added a small demo-account separator to the login form.
+13. Added frontend JWT role decoding for role-aware navigation.
+14. Hid Users navigation for non-admins and Leads navigation for viewers.
+15. Redirected viewers to the dashboard after login.
+16. Updated the users API client so forbidden responses throw instead of being treated as table data.
+
+#### Deliverables:
+- Role included in JWT login response.
+- Auth middleware validates `admin`, `salesAgent`, and `viewer` roles.
+- `/users` protected as admin-only.
+- `/leads` protected from viewer access.
+- Sales agents can only list, view, and edit their own leads.
+- Lead deletion restricted to admins.
+- Lead permission helper extracted to `back-end/src/modules/leads/leads.permissions.ts`.
+- Login page includes role-specific demo account buttons.
+- Frontend navigation now reflects the current user's role.
+- Viewer login lands on the dashboard.
+- Forbidden users API responses no longer crash the Users table.
+- Backend build passed.
+- Frontend TypeScript check passed.
+
+> **Note:**  
+> Backend authorization is the source of truth. Frontend role-aware navigation improves user experience, but protected API routes still enforce the actual security boundary.
