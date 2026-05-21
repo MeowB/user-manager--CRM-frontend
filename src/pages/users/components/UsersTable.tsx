@@ -12,6 +12,7 @@ import { useState } from "react"
 import EditUserModal from "@/features/users/components/EditUserModal"
 import DeleteUserModal from "@/features/users/components/DeleteUserModal"
 import { TrashIcon, PencilIcon } from "lucide-react";
+import { getCurrentUserId } from "@/lib/auth"
 
 type UsersTableProps = {
 	users: User[],
@@ -21,6 +22,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
 	const [isEditOpen, setIsEditOpen] = useState<boolean>(false)
 	const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
 	const [selectedUser, setSelectedUser] = useState<User | null>(null)
+	const currentUserId = getCurrentUserId()
 
 	return (
 		<div className="w-full flex flex-col">
@@ -73,17 +75,19 @@ const UsersTable = ({ users }: UsersTableProps) => {
 									>
 										<PencilIcon color="white" />
 									</Button>
-									<Button
-										className="cursor-pointer"
-										size="sm"
-										variant="destructive"
-										onClick={() => {
-											setSelectedUser(user)
-											setIsDeleteOpen(true)
-										}}
-									>
-										<TrashIcon />
-									</Button>
+									{user.id !== currentUserId && (
+										<Button
+											className="cursor-pointer"
+											size="sm"
+											variant="destructive"
+											onClick={() => {
+												setSelectedUser(user)
+												setIsDeleteOpen(true)
+											}}
+										>
+											<TrashIcon />
+										</Button>
+									)}
 								</TableCell>
 							</TableRow>
 						))}

@@ -801,8 +801,8 @@ Ensure all protected lead actions use the same authentication behavior and reduc
 
 Completed the remaining Users API work from the finish roadmap and removed the unused frontend users mock file after confirming the real API flow is active.
 
-**Purpose:**  
-Finish the user-management backend foundation, verify the frontend no longer depends on mock users data, and keep the roadmap checkpoint accurate for the next session.
+**Purpose:**
+Finish the user-management backend foundation and verify the frontend no longer depends on mock users data.
 
 #### Approach:
 1. Confirmed the current Prisma `User` model fields:
@@ -831,48 +831,10 @@ Finish the user-management backend foundation, verify the frontend no longer dep
 - Role/status-only user update behavior
 - `404` handling for missing users during update
 - Removed unused `front-end/src/api/users.mock.ts`
-- `front-end/docs/PROCESS.md` updated with the current roadmap checkpoint
 - Successful backend build after the Users API change
 
-#### Roadmap Checkpoint:
-- Steps 1 and 2 are complete.
-- Step 3 is now complete: users can be listed, created with hashed passwords, returned without passwords, and updated through `PATCH /users/:id` for role/status changes.
-- Step 4 is complete from the users API side: frontend users code imports the real `src/api/users.ts`, and the unused mock file has been removed.
-- Step 5 is the next active implementation target: wire frontend user editing to `PATCH /users/:id`.
-- Step 6 follows after that: convert Leads data fetching and mutations to React Query.
-
-> **Note:**  
+> **Note:**
 > The roadmap allowed `PATCH /users/:id` as optional, but it was implemented now because it cleanly completes the Users API foundation before moving on to the Leads React Query work.
-
----
-
-### Current Checkpoint - 19/05/2026
-
-Reviewed the existing frontend code against the finish roadmap before starting the next implementation session.
-
-**Purpose:**  
-Re-establish the actual project state so the next work can return to a clear, step-oriented process.
-
-#### Confirmed Current State:
-- Step 1 is complete: frontend API auth is centralized through `src/api/api.ts`.
-- Step 2 is complete: protected backend route shape is in place.
-- Step 3 is complete: the Users API supports listing, creation, password-safe responses, and role/status updates.
-- Step 4 is complete: the frontend Users page uses the real users API instead of mock data.
-- Step 5 is complete: frontend user editing is already wired to `PATCH /users/:id`.
-
-#### Step 5 Verification:
-- `src/api/users.ts` includes `updateUser(id, input)`.
-- `src/features/users/components/EditUserModal.tsx` uses a React Query mutation.
-- Successful user updates invalidate the `["users"]` query.
-- The edit modal only submits `role` and `status`.
-- `src/pages/users/components/UsersTable.tsx` opens the edit modal with the selected user.
-- The backend `PATCH /users/:id` route accepts and validates role/status updates.
-
-#### Next Active Step:
-- Step 6: Make Lead data fetching consistent by moving Leads fetching and mutations to React Query.
-
-> **Note:**  
-> `finish-roadmap.md` was intentionally left unchanged. This checkpoint records actual current status without editing the roadmap source.
 
 ---
 
@@ -1205,3 +1167,49 @@ Make the existing `admin`, `salesAgent`, and `viewer` roles meaningful by enforc
 
 > **Note:**  
 > Backend authorization is the source of truth. Frontend role-aware navigation improves user experience, but protected API routes still enforce the actual security boundary.
+
+---
+
+### Session 41 - Demo Seed Data And Account Safety
+
+Completed the Phase 2 demo seed data step and tightened role-aware UI behavior around leads and users.
+
+**Purpose:**
+Make the demo database repeatable across development and production while protecting the admin inspection path from accidental self-deletion.
+
+#### Approach:
+1. Added a backend Prisma seed script.
+2. Seeded the expected demo login accounts:
+   - `admin@example.com`
+   - `sales@example.com`
+   - `viewer@example.com`
+3. Used the shared demo password `CrmDemo!2026` so the frontend demo login buttons match seeded backend data.
+4. Added repeatable sample leads assigned to different owners.
+5. Included an unassigned lead to preserve the intentional nullable ownership state.
+6. Added `@unique` to `Lead.email` so seed data can use `upsert` safely.
+7. Created and applied a migration for lead email uniqueness.
+8. Added a backend `npm run seed` script.
+9. Ran the seed successfully in development.
+10. Applied the migration and seed successfully in production.
+11. Hid the Owner column from sales agents on the Leads table because they only see their own leads.
+12. Hid lead deletion from sales agents in the frontend, matching backend permissions.
+13. Added a backend guard preventing an authenticated user from deleting their own account.
+14. Hid the delete button for the currently logged-in user on the Users table.
+15. Added frontend JWT user-id decoding to support current-user UI checks.
+
+#### Deliverables:
+- `back-end/prisma/seed.ts`
+- `back-end/package.json` seed script
+- Demo users for admin, sales agent, and viewer roles
+- Repeatable demo lead data using Prisma `upsert`
+- Unique lead email migration
+- Development and production seed verification
+- Backend self-delete protection for `DELETE /users/:id`
+- Role-aware Leads table Owner/Delete visibility
+- Current-user-aware Users table delete visibility
+- Backend README updated with seed workflow
+- Backend build passed
+- Frontend TypeScript check passed
+
+> **Note:**
+> The seed script is intentionally repeatable. As deals, pipeline data, and activities are added, this script should evolve into the single reliable way to rebuild the demo state instead of relying on manual database edits.

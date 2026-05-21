@@ -17,12 +17,17 @@ import EditLeadModal from "./EditLeadModal";
 import DeleteLeadModal from "./DeleteLeadModal";
 import { getLeads } from "@/api/leads";
 import { TableSkeleton } from "@/components/TableSkeleton";
+import { getCurrentUserRole } from "@/lib/auth";
 
 
 const LeadsTable = () => {
 	const [editLeadModalOpen, setEditLeadModalOpen] = useState<boolean>(false)
 	const [deleteLeadModalOpen, setDeleteLeadModalOpen] = useState<boolean>(false)
 	const [currentLead, setCurrentLead] = useState<Lead>()
+	const role = getCurrentUserRole()
+	const showOwnerColumn = role === "admin"
+	const showDeleteAction = role === "admin"
+	const columnCount = showOwnerColumn ? 5 : 4
 	const {
 		data: leads = [],
 		isLoading,
@@ -34,7 +39,7 @@ const LeadsTable = () => {
 	})
 
 	if(isLoading) {
-		return <TableSkeleton columns={5} />
+		return <TableSkeleton columns={columnCount} />
 	}
 
 	if (isError) {
@@ -56,7 +61,7 @@ const LeadsTable = () => {
 								<TableHead className="w-25">Name</TableHead>
 								<TableHead>Email</TableHead>
 								<TableHead>Company</TableHead>
-								<TableHead>Owner</TableHead>
+								{showOwnerColumn && <TableHead>Owner</TableHead>}
 								<TableHead className="w-[1%] text-center">Actions</TableHead>
 							</TableRow>
 						</TableHeader>
@@ -64,7 +69,7 @@ const LeadsTable = () => {
 							{leads.length === 0 && (
 								<TableRow>
 									<TableCell
-										colSpan={5}
+										colSpan={columnCount}
 										className="px-4 py-6 text-center text-sm text-muted-foreground"
 									>
 										No leads found
@@ -76,7 +81,7 @@ const LeadsTable = () => {
 									<TableCell className="font-medium">{lead.name}</TableCell>
 									<TableCell>{lead.email}</TableCell>
 									<TableCell>{lead.company ?? "-"}</TableCell>
-									<TableCell>{lead.owner?.email ?? "Unassigned"}</TableCell>
+									{showOwnerColumn && <TableCell>{lead.owner?.email ?? "Unassigned"}</TableCell>}
 									<TableCell className="flex justify-end gap-2">
 										<Button
 											onClick={() => {
@@ -89,17 +94,19 @@ const LeadsTable = () => {
 											<PencilIcon color="white" />
 										</Button>
 
-										<Button
-											onClick={() => {
-												setCurrentLead(lead)
-												setDeleteLeadModalOpen(true)
-											}}
-											variant="destructive"
-											className="bg-red-400 cursor-pointer"
-											size={"sm"}
-										>
-											<TrashIcon color="white" />
-										</Button>
+										{showDeleteAction && (
+											<Button
+												onClick={() => {
+													setCurrentLead(lead)
+													setDeleteLeadModalOpen(true)
+												}}
+												variant="destructive"
+												className="bg-red-400 cursor-pointer"
+												size={"sm"}
+											>
+												<TrashIcon color="white" />
+											</Button>
+										)}
 									</TableCell>
 								</TableRow>
 							))}
