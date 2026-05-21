@@ -36,6 +36,7 @@ const EditLeadModal = ({ open, setOpen, lead }: NewLeadModalProps) => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["leads"] })
+			queryClient.invalidateQueries({ queryKey: ["lead", lead?.id] })
 			setFormError(null)
 			setOpen(false)
 			toast.success("Lead updated")

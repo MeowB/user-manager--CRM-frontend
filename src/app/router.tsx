@@ -14,6 +14,7 @@ import { loginRoute } from "./routes/login";
 import { dashboardRoute } from "./routes/dashboard";
 import { usersRoute } from "./routes/users";
 import { leadsRoute } from "./routes/leads";
+import { leadRoute } from "./routes/lead";
 
 const routeTree = rootRoute.addChildren([
 	indexRoute,
@@ -21,7 +22,8 @@ const routeTree = rootRoute.addChildren([
 	layoutRoute.addChildren([
 		dashboardRoute,
 		usersRoute,
-		leadsRoute
+		leadsRoute,
+		leadRoute
 	])
 ])
 

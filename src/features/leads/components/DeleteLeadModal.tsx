@@ -17,9 +17,10 @@ type DeleteLeadModalProps = {
   open: boolean
   setOpen: (open: boolean) => void
   lead: Lead | undefined
+  onDeleted?: () => void
 }
 
-export function DeleteLeadModal({ open, setOpen, lead }: DeleteLeadModalProps) {
+export function DeleteLeadModal({ open, setOpen, lead, onDeleted }: DeleteLeadModalProps) {
   const queryClient = useQueryClient()
 
   const deleteLeadMutation = useMutation({
@@ -32,8 +33,10 @@ export function DeleteLeadModal({ open, setOpen, lead }: DeleteLeadModalProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["leads"] })
+      queryClient.removeQueries({ queryKey: ["lead", lead?.id] })
       setOpen(false)
       toast.success("Lead deleted")
+      onDeleted?.()
     },
     onError: (error) => {
       toast.error((error as Error).message)

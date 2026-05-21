@@ -18,6 +18,7 @@ import DeleteLeadModal from "./DeleteLeadModal";
 import { getLeads } from "@/api/leads";
 import { TableSkeleton } from "@/components/TableSkeleton";
 import { getCurrentUserRole } from "@/lib/auth";
+import { Link } from "@tanstack/react-router";
 
 
 const LeadsTable = () => {
@@ -78,7 +79,15 @@ const LeadsTable = () => {
 							)}
 							{leads.map((lead) => (
 								<TableRow key={lead.id} className="odd:bg-muted/50 hover:bg-muted">
-									<TableCell className="font-medium">{lead.name}</TableCell>
+									<TableCell className="font-medium">
+										<Link
+											to={"/leads/$leadId"}
+											params={{ leadId: lead.id }}
+											className="text-primary hover:underline"
+										>
+											{lead.name}
+										</Link>
+									</TableCell>
 									<TableCell>{lead.email}</TableCell>
 									<TableCell>{lead.company ?? "-"}</TableCell>
 									{showOwnerColumn && <TableCell>{lead.owner?.email ?? "Unassigned"}</TableCell>}
@@ -101,7 +110,7 @@ const LeadsTable = () => {
 													setDeleteLeadModalOpen(true)
 												}}
 												variant="destructive"
-												className="bg-red-400 cursor-pointer"
+												className="bg-red-400 hover:bg-red-600 cursor-pointer"
 												size={"sm"}
 											>
 												<TrashIcon color="white" />
