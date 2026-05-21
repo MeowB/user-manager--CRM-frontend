@@ -8,12 +8,66 @@ import { useQuery } from "@tanstack/react-query"
 import { Link, useNavigate, useParams } from "@tanstack/react-router"
 import { ArrowLeft, PencilIcon, TrashIcon } from "lucide-react"
 import { useState } from "react"
+import type { Lead } from "@/domain/lead"
+
+const leadStatusLabels: Record<Lead["status"], string> = {
+	new: "New",
+	contacted: "Contacted",
+	qualified: "Qualified",
+	unqualified: "Unqualified",
+	converted: "Converted",
+}
+
+const leadPriorityLabels: Record<Lead["priority"], string> = {
+	low: "Low",
+	medium: "Medium",
+	high: "High",
+}
+
+const leadStatusClassNames: Record<Lead["status"], string> = {
+	new: "bg-slate-100 text-slate-700",
+	contacted: "bg-blue-100 text-blue-700",
+	qualified: "bg-green-100 text-green-700",
+	unqualified: "bg-gray-200 text-gray-700",
+	converted: "bg-purple-100 text-purple-700",
+}
+
+const leadPriorityClassNames: Record<Lead["priority"], string> = {
+	low: "bg-slate-100 text-slate-700",
+	medium: "bg-blue-100 text-blue-700",
+	high: "bg-red-100 text-red-700",
+}
+
+const badgeClassName = "inline-flex min-w-[5rem] items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium"
+
+const formatFallbackLabel = (value: string | undefined) =>
+	value ? value.charAt(0).toUpperCase() + value.slice(1) : "-"
+
+const getLeadStatusLabel = (status: Lead["status"]) =>
+	leadStatusLabels[status] ?? formatFallbackLabel(status)
+
+const getLeadPriorityLabel = (priority: Lead["priority"]) =>
+	leadPriorityLabels[priority] ?? formatFallbackLabel(priority)
+
+const getLeadStatusClassName = (status: Lead["status"]) =>
+	leadStatusClassNames[status] ?? "bg-slate-100 text-slate-700"
+
+const getLeadPriorityClassName = (priority: Lead["priority"]) =>
+	leadPriorityClassNames[priority] ?? "bg-slate-100 text-slate-700"
 
 const formatDateTime = (value: string) =>
 	new Intl.DateTimeFormat("en", {
 		dateStyle: "medium",
 		timeStyle: "short",
 	}).format(new Date(value))
+
+const formatBudget = (budget: number | null) =>
+	budget === null
+		? "-"
+		: new Intl.NumberFormat("en", {
+			style: "currency",
+			currency: "EUR",
+		}).format(budget / 100)
 
 const LeadDetailSkeleton = () => (
 	<div className="w-full max-w-6xl mx-auto px-6 py-6">
@@ -137,6 +191,26 @@ const LeadDetailPage = () => {
 						<div>
 							<dt className="text-muted-foreground">Owner</dt>
 							<dd>{lead.owner?.email ?? "Unassigned"}</dd>
+						</div>
+						<div>
+							<dt className="text-muted-foreground">Status</dt>
+							<dd>
+								<span className={`${badgeClassName} ${getLeadStatusClassName(lead.status)}`}>
+									{getLeadStatusLabel(lead.status)}
+								</span>
+							</dd>
+						</div>
+						<div>
+							<dt className="text-muted-foreground">Priority</dt>
+							<dd>
+								<span className={`${badgeClassName} ${getLeadPriorityClassName(lead.priority)}`}>
+									{getLeadPriorityLabel(lead.priority)}
+								</span>
+							</dd>
+						</div>
+						<div>
+							<dt className="text-muted-foreground">Budget</dt>
+							<dd>{formatBudget(lead.budget)}</dd>
 						</div>
 						<div>
 							<dt className="text-muted-foreground">Created</dt>

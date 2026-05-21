@@ -37,26 +37,26 @@ type CreateUserModalProps = {
 
 export function CreateUserModal({ open, setOpen }: CreateUserModalProps) {
 
-  const queryClient = useQueryClient()
+	const queryClient = useQueryClient()
 
-  const createUserMutation = useMutation({
-    mutationFn: createUser,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"]})
-      setOpen(false)
-      toast.success("User created")
-    },
-    onError: (error) => {
-      toast.error((error as Error).message)
-    },
-  })
+	const createUserMutation = useMutation({
+		mutationFn: createUser,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["users"] })
+			setOpen(false)
+			toast.success("User created")
+		},
+		onError: (error) => {
+			toast.error((error as Error).message)
+		},
+	})
 
 	const form = useForm<CreateUserFormValues>({
 		resolver: zodResolver(createUserSchema),
 		mode: "onBlur",
 		defaultValues: {
 			email: "",
-      password: "",
+			password: "",
 			role: "viewer",
 			status: "active"
 		},
@@ -99,22 +99,22 @@ export function CreateUserModal({ open, setOpen }: CreateUserModalProps) {
 								<p className="text-sm text-destructive">{form.formState.errors.email.message}</p>
 							)}
 						</div>
-            {/* Password */}
-            <div>
-              <label htmlFor="password">Password</label>
-              <Input
-                type="password"
-                id="password"
-                {...form.register("password")}
-                className={`mt-2 ${form.formState.errors.password && "border-red-400"}`}
-              />
-            </div>
+						{/* Password */}
+						<div>
+							<label htmlFor="password">Password</label>
+							<Input
+								type="password"
+								id="password"
+								{...form.register("password")}
+								className={`mt-2 ${form.formState.errors.password && "border-red-400"}`}
+							/>
+						</div>
 						{/* Role */}
 						<div className="w-full">
 							<Label>Role</Label>
 
 							<Select
-                value={form.watch("role")}
+								value={form.watch("role")}
 								onValueChange={(value) => form.setValue("role", value as CreateUserFormValues["role"])}
 							>
 								<SelectTrigger className="w-full mt-2">
@@ -168,10 +168,10 @@ export function CreateUserModal({ open, setOpen }: CreateUserModalProps) {
 							<Button variant="outline">Cancel</Button>
 						</DialogClose>
 						<Button
-              type="submit"
-              disabled={!form.formState.isValid || createUserMutation.isPending}>
-                {createUserMutation.isPending ? "Creating..." : "Create user"}
-            </Button>
+							type="submit"
+							disabled={!form.formState.isValid || createUserMutation.isPending}>
+							{createUserMutation.isPending ? "Creating..." : "Create user"}
+						</Button>
 					</DialogFooter>
 				</form>
 			</DialogContent>

@@ -15,6 +15,9 @@ export type Lead = {
 	name: string
 	email: string
 	company: string | null
+	status: "new" | "contacted" | "qualified" | "unqualified" | "converted"
+	priority: "low" | "medium" | "high"
+	budget: number | null
 	ownerId: string | null
 	owner: LeadOwner | null
 	createdAt: string

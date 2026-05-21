@@ -20,6 +20,50 @@ import { TableSkeleton } from "@/components/TableSkeleton";
 import { getCurrentUserRole } from "@/lib/auth";
 import { Link } from "@tanstack/react-router";
 
+const leadStatusLabels: Record<Lead["status"], string> = {
+	new: "New",
+	contacted: "Contacted",
+	qualified: "Qualified",
+	unqualified: "Unqualified",
+	converted: "Converted",
+}
+
+const leadPriorityLabels: Record<Lead["priority"], string> = {
+	low: "Low",
+	medium: "Medium",
+	high: "High",
+}
+
+const leadStatusClassNames: Record<Lead["status"], string> = {
+	new: "bg-slate-100 text-slate-700",
+	contacted: "bg-blue-100 text-blue-700",
+	qualified: "bg-green-100 text-green-700",
+	unqualified: "bg-gray-200 text-gray-700",
+	converted: "bg-purple-100 text-purple-700",
+}
+
+const leadPriorityClassNames: Record<Lead["priority"], string> = {
+	low: "bg-slate-100 text-slate-700",
+	medium: "bg-blue-100 text-blue-700",
+	high: "bg-red-100 text-red-700",
+}
+
+const badgeClassName = "inline-flex min-w-[5rem] items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium"
+
+const formatFallbackLabel = (value: string | undefined) =>
+	value ? value.charAt(0).toUpperCase() + value.slice(1) : "-"
+
+const getLeadStatusLabel = (status: Lead["status"]) =>
+	leadStatusLabels[status] ?? formatFallbackLabel(status)
+
+const getLeadPriorityLabel = (priority: Lead["priority"]) =>
+	leadPriorityLabels[priority] ?? formatFallbackLabel(priority)
+
+const getLeadStatusClassName = (status: Lead["status"]) =>
+	leadStatusClassNames[status] ?? "bg-slate-100 text-slate-700"
+
+const getLeadPriorityClassName = (priority: Lead["priority"]) =>
+	leadPriorityClassNames[priority] ?? "bg-slate-100 text-slate-700"
 
 const LeadsTable = () => {
 	const [editLeadModalOpen, setEditLeadModalOpen] = useState<boolean>(false)
@@ -28,7 +72,7 @@ const LeadsTable = () => {
 	const role = getCurrentUserRole()
 	const showOwnerColumn = role === "admin"
 	const showDeleteAction = role === "admin"
-	const columnCount = showOwnerColumn ? 5 : 4
+	const columnCount = showOwnerColumn ? 7 : 6
 	const {
 		data: leads = [],
 		isLoading,
@@ -62,6 +106,8 @@ const LeadsTable = () => {
 								<TableHead className="w-25">Name</TableHead>
 								<TableHead>Email</TableHead>
 								<TableHead>Company</TableHead>
+								<TableHead>Status</TableHead>
+								<TableHead>Priority</TableHead>
 								{showOwnerColumn && <TableHead>Owner</TableHead>}
 								<TableHead className="w-[1%] text-center">Actions</TableHead>
 							</TableRow>
@@ -90,6 +136,16 @@ const LeadsTable = () => {
 									</TableCell>
 									<TableCell>{lead.email}</TableCell>
 									<TableCell>{lead.company ?? "-"}</TableCell>
+									<TableCell>
+										<span className={`${badgeClassName} ${getLeadStatusClassName(lead.status)}`}>
+											{getLeadStatusLabel(lead.status)}
+										</span>
+									</TableCell>
+									<TableCell>
+										<span className={`${badgeClassName} ${getLeadPriorityClassName(lead.priority)}`}>
+											{getLeadPriorityLabel(lead.priority)}
+										</span>
+									</TableCell>
 									{showOwnerColumn && <TableCell>{lead.owner?.email ?? "Unassigned"}</TableCell>}
 									<TableCell className="flex justify-end gap-2">
 										<Button

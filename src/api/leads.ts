@@ -10,6 +10,9 @@ export type LeadInput = {
 	name: string
 	email: string
 	company: string | null
+	status:  "new" | "contacted" | "qualified" | "unqualified" | "converted"
+	priority: "low" | "medium" | "high"
+	budget: number | null
 }
 
 export const getLeads = async (): Promise<Lead[]> => {
