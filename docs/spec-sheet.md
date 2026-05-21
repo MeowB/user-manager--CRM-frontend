@@ -272,11 +272,11 @@ User should expose:
 
 ### Planned Lead Fields
 
-Lead should later include:
+Lead includes:
 
-- `status`: `new`, `contacted`, `negotiating`, `won`, `lost`
+- `status`: `new`, `contacted`, `qualified`, `unqualified`, `converted`
 - `priority`: `low`, `medium`, `high`
-- `budget`: nullable decimal/number
+- `budget`: nullable integer stored in cents
 
 ### Planned Deal Model
 

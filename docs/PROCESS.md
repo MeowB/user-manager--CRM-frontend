@@ -1256,3 +1256,46 @@ Move leads beyond a table-only workflow by adding a dedicated detail route with 
 
 > **Note:**
 > The linked deals and activity timeline sections are intentionally placeholders for later Phase 2 steps.
+
+---
+
+### Session 43 - Lead CRM Fields
+
+Extended leads with current-state CRM fields so they carry enough business context for future deals, pipeline views, and dashboard KPIs.
+
+**Purpose:**
+Prepare the Leads feature for the next sales workflow layers without adding deals, activities, or automatic timeline history yet.
+
+#### Approach:
+1. Added `LeadStatus` and `LeadPriority` enums to the Prisma schema.
+2. Added `status`, `priority`, and nullable `budget` fields to the Lead model.
+3. Stored budget as an integer number of cents to avoid decimal handling issues.
+4. Created and applied a local Prisma migration for the new lead fields.
+5. Updated backend lead create and update validation with Zod.
+6. Kept lead update fields optional for PATCH behavior.
+7. Updated demo seed leads with realistic status, priority, and budget values.
+8. Updated frontend Lead and LeadInput contracts.
+9. Added frontend Zod parsing so empty budget becomes `null` and entered currency values are converted to cents.
+10. Added status, priority, and budget inputs to the create lead modal.
+11. Replaced status and priority text inputs with select controls in the edit lead modal.
+12. Displayed status and priority as compact badges in the Leads table.
+13. Displayed status, priority, and formatted budget on the Lead Detail page.
+14. Added backend Prisma handling for duplicate lead emails and stale-token owner references during lead creation.
+15. Clarified the spec sheet distinction between human-entered Activities and automatic Timeline Events.
+
+#### Deliverables:
+- Lead CRM fields in the backend Prisma model
+- Local migration for lead status, priority, and budget
+- Backend create/update validation for lead CRM fields
+- Updated seed data for the expanded Lead model
+- Frontend lead domain and API contracts updated
+- Create/edit lead forms supporting status, priority, and budget
+- Leads table badges for status and priority
+- Lead Detail display for status, priority, and budget
+- Better backend error responses for lead creation edge cases
+- Spec sheet updated for current lead field shape and future timeline concepts
+- Backend build passed
+- Frontend TypeScript check passed
+
+> **Note:**
+> Lead fields represent current state only. Activity history and automatic timeline events remain planned for a later phase.
