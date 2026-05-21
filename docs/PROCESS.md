@@ -1213,3 +1213,46 @@ Make the demo database repeatable across development and production while protec
 
 > **Note:**
 > The seed script is intentionally repeatable. As deals, pipeline data, and activities are added, this script should evolve into the single reliable way to rebuild the demo state instead of relying on manual database edits.
+
+---
+
+### Session 42 - Lead Detail Page
+
+Created a focused lead detail workspace so leads can be opened from the table, inspected, edited, and deleted from one place.
+
+**Purpose:**
+Move leads beyond a table-only workflow by adding a dedicated detail route with record-level actions and room for future deals and activity data.
+
+#### Approach:
+1. Added a frontend `getLead(id)` API function.
+2. Added a TanStack Router route for `/leads/$leadId`.
+3. Created `LeadDetailPage`.
+4. Made lead names clickable from the Leads table.
+5. Added loading, missing-id, error, and not-found states.
+6. Added a skeleton loading layout for the detail page.
+7. Added a Back to leads action.
+8. Displayed lead summary information and ownership details.
+9. Displayed created and updated timestamps.
+10. Added placeholder sections for linked deals and the activity timeline.
+11. Reused the existing lead edit modal from the detail page.
+12. Reused the existing lead delete modal from the detail page.
+13. Kept lead deletion visible to admins only.
+14. Updated lead edit invalidation so both list and detail queries refresh.
+15. Updated lead delete handling so deleting from detail returns to the Leads page.
+16. Added shared pointer cursor behavior to the Button primitive.
+17. Added explicit hover styling to lead delete buttons.
+
+#### Deliverables:
+- `src/api/leads.ts` detail fetch support
+- `src/app/routes/lead.tsx`
+- `src/pages/leads/LeadDetailPage.tsx`
+- Clickable lead names in `LeadsTable`
+- Lead detail loading skeleton
+- Back navigation from detail to list
+- Detail-level edit and admin-only delete actions
+- Updated lead edit/delete query behavior for detail usage
+- Shared button cursor behavior
+- Frontend TypeScript check passed
+
+> **Note:**
+> The linked deals and activity timeline sections are intentionally placeholders for later Phase 2 steps.
