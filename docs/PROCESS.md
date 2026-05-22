@@ -1299,3 +1299,43 @@ Prepare the Leads feature for the next sales workflow layers without adding deal
 
 > **Note:**
 > Lead fields represent current state only. Activity history and automatic timeline events remain planned for a later phase.
+
+---
+
+### Session 44 - Deal Model, API CRUD, And Demo Deals
+
+Added the backend foundation for deals so leads can now have linked sales opportunities.
+
+**Purpose:**
+Move Phase 2 from lead preparation into the actual sales workflow by introducing deals as database records with protected CRUD endpoints.
+
+#### Approach:
+1. Added a `DealStage` enum to the Prisma schema.
+2. Added a `Deal` model linked to `Lead`.
+3. Stored deal amounts as nullable integer cents.
+4. Added a reverse `Lead.deals` relation.
+5. Created and applied the local deal migration.
+6. Added Zod create and update schemas for deals.
+7. Added a deal permission helper that checks access through the linked lead owner.
+8. Added authenticated `/deals` CRUD routes.
+9. Blocked viewers from deal routes.
+10. Allowed sales agents to access only deals linked to their own leads.
+11. Kept deal deletion admin-only.
+12. Mounted the deals router in the central backend router.
+13. Updated the seed script with multiple repeatable demo deals per demo lead.
+14. Updated the backend README with deal routes and seed behavior.
+
+#### Deliverables:
+- `DealStage` enum and `Deal` Prisma model.
+- Local `add_deals` migration.
+- `back-end/src/modules/deals/deals.route.ts`
+- `back-end/src/modules/deals/deals.permissions.ts`
+- Deal create/update Zod schemas.
+- Authenticated `/deals` CRUD endpoints.
+- Role-aware deal access based on linked lead ownership.
+- Repeatable demo deal seed data.
+- Backend README updated for deals.
+- Backend build passed.
+
+> **Note:**
+> Deal ownership is intentionally derived from the linked lead. This keeps the CRM model simpler for now and avoids duplicating ownership state across leads and deals.
