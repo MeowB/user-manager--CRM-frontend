@@ -1339,3 +1339,139 @@ Move Phase 2 from lead preparation into the actual sales workflow by introducing
 
 > **Note:**
 > Deal ownership is intentionally derived from the linked lead. This keeps the CRM model simpler for now and avoids duplicating ownership state across leads and deals.
+
+---
+
+### Session 45 - Frontend Deals Workflow
+
+Built the first frontend deal workflow so deals are visible and manageable from the lead workspace and from a dedicated Deals page.
+
+**Purpose:**
+Move deals from backend-only records into the frontend CRM experience while preserving the current role-aware access model.
+
+#### Approach:
+1. Added frontend deal domain contracts.
+2. Added a deals API client.
+3. Added create and edit deal form schemas.
+4. Added a Create Deal modal on Lead Detail.
+5. Prefilled deal creation with the current lead id.
+6. Defaulted deal amount from the lead budget when available.
+7. Added backend `GET /leads/:id/deals` relationship endpoint.
+8. Reused lead access rules for linked deal access.
+9. Ordered linked deals by `updatedAt` for the current simple view.
+10. Rendered linked deals on Lead Detail with loading, error, empty, and populated states.
+11. Added a dedicated `/deals` frontend route.
+12. Added a Deals page and Deals table.
+13. Added Deals sidebar navigation for admins and sales agents.
+14. Redirected viewers away from the Deals page.
+15. Kept backend deal authorization as the source of truth.
+16. Added an admin-only Owner column to the Deals table.
+17. Included lead owner data in deal API responses.
+18. Added a subtle chevron hint to clickable lead names in the Leads table.
+
+#### Deliverables:
+- `front-end/src/domain/deal.ts`
+- `front-end/src/api/deals.ts`
+- `front-end/src/features/deals/schemas/createDeal.schema.ts`
+- `front-end/src/features/deals/schemas/editDeal.schema.ts`
+- `front-end/src/features/deals/components/CreateDealModal.tsx`
+- `front-end/src/features/deals/components/DealsTable.tsx`
+- `front-end/src/pages/deals/DealsPage.tsx`
+- `front-end/src/app/routes/deals.tsx`
+- `back-end/src/modules/leads/leads.route.ts` relationship endpoint
+- Linked deals rendered on Lead Detail
+- Deals page at `/deals`
+- Admin owner visibility for deals
+- Viewer-blocked Deals navigation and route
+- Backend build passed
+- Frontend TypeScript check passed
+
+> **Note:**
+> Deals are intentionally still simple records: title, amount, stage, linked lead, and timestamps. The next product depth comes from edit/delete workflows, pipeline movement, dashboard KPIs, and later activity/action history rather than adding premature fields.
+
+---
+
+### Session 46 - User Full Names And Owner Identity
+
+Added a real person label to users so admins do not have to identify account ownership from email addresses alone.
+
+**Purpose:**
+Improve user management and ownership displays as the CRM grows beyond demo accounts and email-only identity becomes too ambiguous.
+
+#### Approach:
+1. Added `fullName` to the backend `User` model.
+2. Added a safe default for existing rows during migration.
+3. Updated the Prisma seed script with fictional demo names.
+4. Added `fullName` to backend user create validation.
+5. Added `fullName` to backend user update validation.
+6. Included `fullName` in password-safe user responses.
+7. Included owner `fullName` in lead and deal response payloads.
+8. Updated frontend user domain contracts.
+9. Updated frontend lead and deal owner contracts.
+10. Added Full name to the create user modal.
+11. Added Full name to the edit user modal.
+12. Added a User column to the Users table.
+13. Updated lead owner displays to show full name plus email.
+14. Updated deal owner displays to show full name plus email.
+15. Kept demo names fictional and avoided using any real personal name.
+
+#### Deliverables:
+- `User.fullName` in Prisma schema
+- Local migration for user full names
+- Fictional seeded demo users:
+  - `Nora Hayes`
+  - `Leo Martin`
+  - `Ava Laurent`
+- Backend user create/update validation for full names
+- Frontend user create/edit support for full names
+- Users table person-first display
+- Lead and deal owner displays using `Full Name (email)`
+- Backend build passed
+- Frontend TypeScript check passed
+
+> **Note:**
+> Email remains the login identifier, but `fullName` is now the human-facing identity used by admins when reviewing users, lead owners, and deal owners.
+
+---
+
+## Next Step - Backend Smoke Tests
+
+The next focused work session should introduce the first automated smoke tests for the backend API.
+
+**Purpose:**
+Turn the current manual verification flow into repeatable checks while learning the testing structure step by step.
+
+### Planned Session Shape
+
+1. Map the testing goal:
+   - Define what a smoke test is.
+   - Decide what should be tested now.
+   - Keep UI/browser testing out of scope for the first pass.
+
+2. Write the first minimal check:
+   - Call `GET /health`.
+   - Confirm the server responds successfully.
+   - Make failures easy to read.
+
+3. Add an auth helper:
+   - Log in as a seeded demo user.
+   - Extract the JWT.
+   - Reuse the token in authenticated requests.
+
+4. Add role-aware checks:
+   - Admin can access `/deals`.
+   - Sales agent can access `/deals`.
+   - Viewer receives `403` for `/deals`.
+   - Sales agent cannot access another owner's linked lead deals.
+
+5. Add a package script:
+   - Add a backend command such as `npm run smoke`.
+   - Document that the backend server must be running and the database must be migrated/seeded.
+
+6. Refactor for readability:
+   - Keep helpers small.
+   - Prefer clear test output over clever abstraction.
+   - Leave browser-level tests for a later phase.
+
+> **Note:**
+> The goal is not only to add a smoke script, but to make the testing workflow understandable enough to reproduce without copy-pasting blindly.

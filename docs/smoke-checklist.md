@@ -39,13 +39,21 @@ Leads:
 - Create a lead.
 - Edit the lead.
 - Delete the lead.
+- `GET /leads/:id/deals` returns linked deals for an accessible lead.
 
 Users:
 
 - `GET /users` returns users without password fields.
 - Create a user.
-- Edit the user's role/status.
+- Edit the user's full name, role, and status.
 - Delete the user.
+
+Deals:
+
+- `GET /deals` returns deals for admin and sales users.
+- Admin sees all seeded deals.
+- Sales agent sees only deals linked to their own leads.
+- Viewer receives `403` for deal routes.
 
 ## Frontend UI
 
@@ -54,4 +62,12 @@ Users:
 - Logout clears the token and redirects to `/login`.
 - Leads table shows loading, empty, success, and delete confirmation states.
 - Users table shows loading, empty, success, and delete confirmation states.
+- Users table shows full names.
+- Lead owner and deal owner displays show full name plus email.
+- Admin sees the Deals navigation link and Deals page.
+- Sales agent sees the Deals navigation link and only their own deals.
+- Viewer does not see the Deals navigation link.
+- Lead Detail shows linked deals.
+- Creating a deal from Lead Detail refreshes the linked deals section.
+- Admin sees the Owner column on the Deals page.
 - Create/edit/delete actions show success or error feedback.

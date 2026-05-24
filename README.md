@@ -1,8 +1,8 @@
 # User Management CRM
 
-Frontend for a small-team CRM focused on user management and lead management.
-The app uses real backend data, authenticated API requests, server-state
-management, and CRUD-focused UI flows.
+Frontend for a small-team CRM focused on user management, lead management, and
+deal tracking. The app uses real backend data, authenticated API requests,
+server-state management, and CRUD-focused UI flows.
 
 ## Related Repositories
 
@@ -24,19 +24,31 @@ management, and CRUD-focused UI flows.
 - Login flow using the backend auth endpoint.
 - Protected application layout with redirect to `/login` when no token exists.
 - Logout button that clears the stored token.
+- Role-aware navigation:
+  - admins can access dashboard, users, leads, and deals
+  - sales agents can access dashboard, leads, and deals
+  - viewers are currently dashboard-only
 - Leads CRUD:
   - list leads
   - create leads
   - edit leads
   - delete leads with confirmation
+  - open a dedicated lead detail page
+  - view owner, status, priority, budget, and linked deals
+- Deals:
+  - create a deal from Lead Detail
+  - view deals linked to a lead
+  - view a dedicated Deals page
+  - admins see all deals with owner context
+  - sales agents see deals linked to their own leads
 - Users CRUD:
   - list users
-  - create users
-  - edit user role/status
+  - create users with full names
+  - edit user full name, role, and status
   - delete users with confirmation
 - TanStack Query for server-state fetching, mutations, and query invalidation.
-- Shared frontend domain types for leads and users.
-- Zod form schemas for lead and user forms.
+- Shared frontend domain types for users, leads, and deals.
+- Zod form schemas for user, lead, and deal forms.
 - Loading skeletons, empty states, inline errors, pending states, and success/error toasts.
 
 ## Local Setup
@@ -71,12 +83,17 @@ Useful scripts:
 ## Architecture Overview
 
 Routing is handled with TanStack Router. The login route is public, while the
-main application layout protects dashboard, users, and leads pages with a token
-guard.
+main application layout protects dashboard, users, leads, lead detail, and deals
+pages with a token guard.
+
+Frontend navigation mirrors the current role model for user experience, while
+the backend remains the source of truth for authorization. Viewers are redirected
+away from protected CRM sections such as leads and deals.
 
 Server state is managed with TanStack Query. API functions live in `src/api`,
 while pages and feature components use queries and mutations to fetch data,
-perform writes, and invalidate stale query data.
+perform writes, and invalidate stale query data. Lead Detail also fetches linked
+deals through the backend relationship route.
 
 The codebase separates route pages from feature implementation:
 
@@ -84,6 +101,15 @@ The codebase separates route pages from feature implementation:
 - `src/features`: feature-specific tables, modals, and schemas.
 - `src/domain`: shared frontend domain types.
 - `src/components`: reusable UI primitives and shared UI helpers.
+
+Current primary routes:
+
+- `/login`
+- `/dashboard`
+- `/users`
+- `/leads`
+- `/leads/$leadId`
+- `/deals`
 
 ## Development Process
 
