@@ -6,6 +6,7 @@
 
 export type LeadOwner = {
 	id: string
+	fullName: string
 	email: string
 	role: "admin" | "salesAgent" | "viewer"
 }

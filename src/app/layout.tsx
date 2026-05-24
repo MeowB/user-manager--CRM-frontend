@@ -44,12 +44,20 @@ function Layout() {
 							</Link>
 						)}
 						{role !== "viewer" && (
-							<Link
-								to='/leads'
-								activeProps={{ className: "text-foreground font-medium" }}
-								className="px-2 py-1 text-muted-foreground">
-								Leads
-							</Link>
+							<>
+								<Link
+									to='/leads'
+									activeProps={{ className: "text-foreground font-medium" }}
+									className="px-2 py-1 text-muted-foreground">
+									Leads
+								</Link>
+								<Link
+									to='/deals'
+									activeProps={{ className: "text-foreground font-medium" }}
+									className="px-2 py-1 text-muted-foreground">
+									Deals
+								</Link>
+							</>
 						)}
 
 						<div className="mt-auto w-full">

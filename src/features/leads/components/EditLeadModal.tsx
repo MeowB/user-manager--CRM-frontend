@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog"
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
 	Select,
 	SelectContent,
@@ -90,15 +91,19 @@ const EditLeadModal = ({ open, setOpen, lead }: NewLeadModalProps) => {
 					</DialogHeader>
 					<FieldGroup className="mt-4">
 						<Field>
+							<Label htmlFor="name">Name</Label>
 							<Input id="name" name="name" defaultValue={lead.name} />
 						</Field>
 						<Field>
+							<Label htmlFor="email">Email</Label>
 							<Input id="email" name="email" defaultValue={lead.email} />
 						</Field>
 						<Field>
+							<Label htmlFor="company">Company</Label>
 							<Input id="company" name="company" defaultValue={lead.company ?? ""} />
 						</Field>
 						<Field>
+							<Label>Status</Label>
 							<Select name="status" defaultValue={lead.status}>
 								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Select status" />
@@ -113,6 +118,7 @@ const EditLeadModal = ({ open, setOpen, lead }: NewLeadModalProps) => {
 							</Select>
 						</Field>
 						<Field>
+							<Label>Priority</Label>
 							<Select name="priority" defaultValue={lead.priority}>
 								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Select priority" />
@@ -125,6 +131,7 @@ const EditLeadModal = ({ open, setOpen, lead }: NewLeadModalProps) => {
 							</Select>
 						</Field>
 						<Field>
+							<Label htmlFor="budget">Budget</Label>
 							<Input
 								id="budget"
 								name="budget"

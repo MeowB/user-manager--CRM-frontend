@@ -12,7 +12,7 @@ import {
 import { useState } from "react"
 import type { Lead } from "@/domain/lead";
 import { Button } from "@/components/ui/button";
-import { TrashIcon, PencilIcon } from "lucide-react";
+import { TrashIcon, PencilIcon, ChevronRightIcon } from "lucide-react";
 import EditLeadModal from "./EditLeadModal";
 import DeleteLeadModal from "./DeleteLeadModal";
 import { getLeads } from "@/api/leads";
@@ -64,6 +64,9 @@ const getLeadStatusClassName = (status: Lead["status"]) =>
 
 const getLeadPriorityClassName = (priority: Lead["priority"]) =>
 	leadPriorityClassNames[priority] ?? "bg-slate-100 text-slate-700"
+
+const formatOwnerLabel = (owner: Lead["owner"]) =>
+	owner ? `${owner.fullName} (${owner.email})` : "Unassigned"
 
 const LeadsTable = () => {
 	const [editLeadModalOpen, setEditLeadModalOpen] = useState<boolean>(false)
@@ -124,14 +127,15 @@ const LeadsTable = () => {
 								</TableRow>
 							)}
 							{leads.map((lead) => (
-								<TableRow key={lead.id} className="odd:bg-muted/50 hover:bg-muted">
+								<TableRow key={lead.id} className="group odd:bg-muted/50 hover:bg-muted">
 									<TableCell className="font-medium">
 										<Link
 											to={"/leads/$leadId"}
 											params={{ leadId: lead.id }}
-											className="text-primary hover:underline"
+											className="inline-flex items-center gap-1 text-primary hover:underline"
 										>
 											{lead.name}
+											<ChevronRightIcon className="size-3 text-muted-foreground opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:opacity-100" />
 										</Link>
 									</TableCell>
 									<TableCell>{lead.email}</TableCell>
@@ -146,7 +150,7 @@ const LeadsTable = () => {
 											{getLeadPriorityLabel(lead.priority)}
 										</span>
 									</TableCell>
-									{showOwnerColumn && <TableCell>{lead.owner?.email ?? "Unassigned"}</TableCell>}
+									{showOwnerColumn && <TableCell>{formatOwnerLabel(lead.owner)}</TableCell>}
 									<TableCell className="flex justify-end gap-2">
 										<Button
 											onClick={() => {

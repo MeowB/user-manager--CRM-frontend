@@ -6,6 +6,7 @@
 import { z } from "zod"
 
 export const editUserSchema = z.object({
+  fullName: z.string().trim().min(1, "Full name is required"),
   role: z.enum(["admin", "salesAgent", "viewer"]),
   status: z.enum(["active", "disabled"])
 })

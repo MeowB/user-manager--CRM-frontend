@@ -7,6 +7,7 @@ import { apiFetch } from "./api"
 import type { User } from "@/domain/user"
 
 export type CreateUserInput = {
+  fullName: string
   email: string
   password: string
   role: User["role"]
@@ -14,6 +15,7 @@ export type CreateUserInput = {
 }
 
 export type UpdateUserInput = {
+  fullName: string
   role: User["role"]
   status: User["status"]
 }

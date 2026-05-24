@@ -38,7 +38,7 @@ const UsersPage = () => {
 			</div>
 
 			{isLoading || !usersResponse ? (
-				<TableSkeleton columns={4} />
+				<TableSkeleton columns={5} />
 			) : (
 				<UsersTable users={usersResponse} />
 			)}

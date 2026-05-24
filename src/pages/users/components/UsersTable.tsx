@@ -30,6 +30,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
 				<Table>
 					<TableHeader>
 						<TableRow>
+							<TableHead>User</TableHead>
 							<TableHead>Email</TableHead>
 							<TableHead>Role</TableHead>
 							<TableHead className="w-[1%] text-center">Status</TableHead>
@@ -41,7 +42,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
 						{users.length === 0 && (
 							<TableRow>
 								<TableCell
-									colSpan={4}
+									colSpan={5}
 									className="px-4 py-6 text-center text-sm text-muted-foreground"
 								>
 									No users found
@@ -50,6 +51,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
 						)}
 						{users.map((user) => (
 							<TableRow key={user.id} className="odd:bg-muted/50 hover:bg-muted">
+								<TableCell className="font-medium">{user.fullName}</TableCell>
 								<TableCell>{user.email}</TableCell>
 								<TableCell>{user.role}</TableCell>
 								<TableCell>

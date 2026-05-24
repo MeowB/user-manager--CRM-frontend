@@ -55,6 +55,7 @@ export function CreateUserModal({ open, setOpen }: CreateUserModalProps) {
 		resolver: zodResolver(createUserSchema),
 		mode: "onBlur",
 		defaultValues: {
+			fullName: "",
 			email: "",
 			password: "",
 			role: "viewer",
@@ -85,6 +86,20 @@ export function CreateUserModal({ open, setOpen }: CreateUserModalProps) {
 
 					{/* FORM BODY */}
 					<div className="grid gap-4 mt-6">
+						{/* Full name */}
+						<div>
+							<Label htmlFor="fullName">Full name</Label>
+							<Input
+								type="text"
+								id="fullName"
+								placeholder="Demo User"
+								{...form.register("fullName")}
+								className={`mt-2 ${form.formState.errors.fullName && "border-red-400"}`}
+							/>
+							{form.formState.errors.fullName && (
+								<p className="text-sm text-destructive">{form.formState.errors.fullName.message}</p>
+							)}
+						</div>
 						{/* Email */}
 						<div>
 							<Label htmlFor="email">Email</Label>

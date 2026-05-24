@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import {
@@ -39,6 +40,7 @@ export function EditUserModal({ open, setOpen, user }: EditUserModalProps) {
     resolver: zodResolver(editUserSchema),
     mode: "onBlur",
     defaultValues: {
+      fullName: "",
       role: "viewer",
       status: "active"
     },
@@ -71,6 +73,7 @@ export function EditUserModal({ open, setOpen, user }: EditUserModalProps) {
   useEffect(() => {
     if (open && user) {
       form.reset({
+        fullName: user.fullName,
         role: user.role,
         status: user.status
       })
@@ -98,6 +101,20 @@ export function EditUserModal({ open, setOpen, user }: EditUserModalProps) {
           <div className="grid gap-4 mt-6">
             <div>
               <p className="text-sm text-muted-foreground">{user?.email}</p>
+            </div>
+
+            <div>
+              <Label htmlFor="edit-fullName">Full name</Label>
+              <Input
+                id="edit-fullName"
+                className={`mt-2 ${form.formState.errors.fullName && "border-red-400"}`}
+                {...form.register("fullName")}
+              />
+              {form.formState.errors.fullName && (
+                <p className="text-sm text-destructive">
+                  {form.formState.errors.fullName.message}
+                </p>
+              )}
             </div>
 
             <div className="w-full">
