@@ -19,9 +19,9 @@ type UsersTableProps = {
 }
 
 const protectedDemoEmails = new Set([
-	"admin@example.com",
-	"sales@example.com",
-	"viewer@example.com"
+	"admin@demo.account",
+	"sales@demo.account",
+	"viewer@demo.account"
 ])
 
 const UsersTable = ({ users }: UsersTableProps) => {

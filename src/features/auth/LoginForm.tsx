@@ -13,9 +13,9 @@ const LoginForm = () => {
 	const navigate = useNavigate()
 	const [loginError, setLoginError] = useState<string | null>(null)
 	const demoAccounts = [
-		{ label: "Admin", email: "admin@example.com", password: "CrmDemo!2026" },
-		{ label: "Sales Agent", email: "sales@example.com", password: "CrmDemo!2026" },
-		{ label: "Viewer", email: "viewer@example.com", password: "CrmDemo!2026" },
+		{ label: "Admin", email: "admin@demo.account", password: "CrmDemo!2026" },
+		{ label: "Sales Agent", email: "sales@demo.account", password: "CrmDemo!2026" },
+		{ label: "Viewer", email: "viewer@demo.account", password: "CrmDemo!2026" },
 	]
 
 	const fillDemoAccount = (email: string, password: string) => {
