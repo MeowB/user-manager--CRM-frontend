@@ -8,8 +8,14 @@ Backend:
 
 ```bash
 cd back-end
+npm run test
 npm run build
 ```
+
+Backend CI:
+
+- GitHub Actions runs migrations, seed, tests, and build against a temporary PostgreSQL database on push and pull request.
+- Hosted backend deploys should run `npm run db:deploy` before `npm start` so migrations and repeatable demo seed data are restored.
 
 Frontend:
 
@@ -47,6 +53,7 @@ Users:
 - Create a user.
 - Edit the user's full name, role, and status.
 - Delete the user.
+- Protected demo accounts cannot be deleted.
 
 Deals:
 
@@ -58,11 +65,12 @@ Deals:
 ## Frontend UI
 
 - Visiting a protected route without a token redirects to `/login`.
-- Login stores the token and redirects into the app.
+- Login stores the token and redirects all roles to `/dashboard`.
 - Logout clears the token and redirects to `/login`.
 - Leads table shows loading, empty, success, and delete confirmation states.
 - Users table shows loading, empty, success, and delete confirmation states.
 - Users table shows full names.
+- Users table hides delete actions for the current user and protected demo accounts.
 - Lead owner and deal owner displays show full name plus email.
 - Admin sees the Deals navigation link and Deals page.
 - Sales agent sees the Deals navigation link and only their own deals.

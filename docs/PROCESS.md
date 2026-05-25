@@ -1180,9 +1180,9 @@ Make the demo database repeatable across development and production while protec
 #### Approach:
 1. Added a backend Prisma seed script.
 2. Seeded the expected demo login accounts:
-   - `admin@example.com`
-   - `sales@example.com`
-   - `viewer@example.com`
+   - `admin@demo.account`
+   - `sales@demo.account`
+   - `viewer@demo.account`
 3. Used the shared demo password `CrmDemo!2026` so the frontend demo login buttons match seeded backend data.
 4. Added repeatable sample leads assigned to different owners.
 5. Included an unassigned lead to preserve the intentional nullable ownership state.
@@ -1434,44 +1434,65 @@ Improve user management and ownership displays as the CRM grows beyond demo acco
 
 ---
 
-## Next Step - Backend Smoke Tests
+### Session 47 - Backend Tests, Demo Account Safety, And CI
 
-The next focused work session should introduce the first automated smoke tests for the backend API.
+Added automated backend API coverage and deployment plumbing so the demo is harder to accidentally break.
 
 **Purpose:**
-Turn the current manual verification flow into repeatable checks while learning the testing structure step by step.
+Turn the backend from manually checked routes into a repeatable, CI-backed API surface while making hosted demo data recoverable.
+
+#### Approach:
+1. Started with a small manual HTTP test script to clarify request/assertion basics.
+2. Replaced the script with Vitest tests split by API area.
+3. Added a reusable test server helper that starts the Express app on a temporary port.
+4. Added request/login helpers for authenticated route tests.
+5. Covered health, auth, users, leads, deals, ownership rules, and linked lead deals.
+6. Moved tests out of `src` into a top-level `tests` folder.
+7. Added Vitest config so compiled `dist` files are ignored.
+8. Protected core demo login accounts from deletion.
+9. Added disposable seeded users that recruiters can edit/delete.
+10. Renamed protected demo login accounts to:
+    - `admin@demo.account`
+    - `sales@demo.account`
+    - `viewer@demo.account`
+11. Updated frontend demo login buttons and Users delete-button visibility.
+12. Routed all successful logins to `/dashboard`.
+13. Added backend CI with GitHub Actions using a temporary PostgreSQL database.
+14. Added `npm run db:deploy` so hosted deploys can migrate and reseed before starting.
+15. Configured hosted backend deploys to run migrations and seed data on redeploy.
+
+#### Deliverables:
+- Backend Vitest API test suite.
+- `tests/helpers/testServer.ts`
+- `tests/helpers/api.ts`
+- GitHub Actions backend CI workflow.
+- Protected seeded demo accounts.
+- Editable/deletable disposable sample accounts.
+- Frontend demo account buttons using `@demo.account` addresses.
+- All login roles land on Dashboard.
+- Render deploy flow applies migrations and reseeds the demo database.
+- Backend tests, backend build, frontend typecheck, GitHub CI, and production deploy verified.
+
+---
+
+## Next Step - Data-Backed Dashboard KPIs
+
+The next focused product session should make the dashboard useful now that every role lands there after login.
+
+**Purpose:**
+Use the existing lead and deal data to show role-aware CRM KPIs instead of a placeholder dashboard.
 
 ### Planned Session Shape
 
-1. Map the testing goal:
-   - Define what a smoke test is.
-   - Decide what should be tested now.
-   - Keep UI/browser testing out of scope for the first pass.
-
-2. Write the first minimal check:
-   - Call `GET /health`.
-   - Confirm the server responds successfully.
-   - Make failures easy to read.
-
-3. Add an auth helper:
-   - Log in as a seeded demo user.
-   - Extract the JWT.
-   - Reuse the token in authenticated requests.
-
-4. Add role-aware checks:
-   - Admin can access `/deals`.
-   - Sales agent can access `/deals`.
-   - Viewer receives `403` for `/deals`.
-   - Sales agent cannot access another owner's linked lead deals.
-
-5. Add a package script:
-   - Add a backend command such as `npm run smoke`.
-   - Document that the backend server must be running and the database must be migrated/seeded.
-
-6. Refactor for readability:
-   - Keep helpers small.
-   - Prefer clear test output over clever abstraction.
-   - Leave browser-level tests for a later phase.
+1. Add backend `GET /dashboard/kpis`.
+2. Return all-team aggregate KPIs for admins by default.
+3. Let admins pass `ownerId` to inspect one user's KPIs.
+4. Return self-scoped KPIs for sales agents.
+5. Return broad aggregate KPIs for viewers.
+6. Cover the endpoint with backend tests.
+7. Add frontend dashboard fetching with TanStack Query.
+8. Render KPI cards and compact status/stage summaries.
+9. Add an admin owner filter.
 
 > **Note:**
-> The goal is not only to add a smoke script, but to make the testing workflow understandable enough to reproduce without copy-pasting blindly.
+> A future dashboard v2 may become an admin workforce overview with per-user performance, workload, ownership distribution, and conversion signals. Build the first KPI endpoint so that direction remains open without overbuilding it now.

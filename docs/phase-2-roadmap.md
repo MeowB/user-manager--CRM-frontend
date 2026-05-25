@@ -368,10 +368,13 @@ Start simple:
 Initial KPI cards:
 - Total leads
 - Total deals
-- Pipeline value
+- Open pipeline value
+- Won value
+- Lost value
 - Deals by stage
-- Won deals
-- Lost deals
+- Leads by status
+- High-priority leads
+- Unassigned leads
 
 Implementation options:
 - Backend endpoint: `GET /dashboard/kpis`
@@ -379,6 +382,29 @@ Implementation options:
 
 Recommendation:
 - Use backend endpoint once deal data exists, because dashboard logic will grow.
+- Keep KPI scoping on the backend because role-aware filtering is security-sensitive.
+
+Role-aware scope:
+- Admin default view shows all-team KPIs.
+- Admin can filter KPIs by a specific user to inspect one team member's pipeline and lead state.
+- Sales agents see their own KPIs only.
+- Viewers see broad aggregate KPIs only.
+
+API shape:
+
+```txt
+GET /dashboard/kpis
+GET /dashboard/kpis?ownerId=<userId>
+```
+
+Rules:
+- `ownerId` is accepted only for admins.
+- No `ownerId` means all-team scope for admins and viewers.
+- Sales agents always receive self-scoped KPIs.
+
+Future dashboard v2:
+- Add admin workforce overview with per-user performance, workload, lead ownership, deal value, and conversion signals.
+- Decide later whether this belongs on Dashboard as an admin section or in a dedicated Reports / Team Performance screen.
 
 Layout idea:
 
@@ -390,7 +416,9 @@ Dashboard
 |   |-- Pipeline Value
 |   `-- Win Rate
 |
+|-- Admin Scope Filter
 |-- Deals By Stage
+|-- Leads By Status
 `-- Recent Activity Placeholder
 ```
 

@@ -50,7 +50,7 @@ Current implemented foundation:
 
 ### Phase 2 - Ownership, Deals, And Pipeline
 
-Planned next phase:
+Current implemented depth:
 
 - Lead ownership by user.
 - Role-aware lead access.
@@ -59,8 +59,14 @@ Planned next phase:
 - Deal model and Deal CRUD.
 - Create deal from lead.
 - Linked deals on Lead Detail.
+- Dedicated Deals page.
+- Repeatable demo seed data with protected demo login accounts.
+- Backend API test coverage and CI checks.
+
+Remaining Phase 2 direction:
+
 - Pipeline page.
-- Dashboard KPIs.
+- Data-backed Dashboard KPIs.
 - Activity timeline placeholder.
 
 ### Phase 3 - Activities And Advanced CRM Behavior
@@ -79,11 +85,11 @@ Later phase:
 
 Final portfolio-readiness phase:
 
-- Automated smoke/API checks.
-- Seed script for realistic demo data.
-- Demo credentials documented safely.
+- Broader automated checks across backend and frontend.
+- Seed script for realistic demo data maintained as the demo grows.
+- Demo credentials documented safely and protected from deletion.
 - Screenshots or short demo video in the README.
-- CI checks for frontend typecheck and backend build.
+- CI checks for backend tests/build and frontend typecheck/build.
 - Accessibility pass for core workflows.
 - Deployment documentation.
 - Architecture overview covering auth flow, data model, routing, and API boundaries.
@@ -101,6 +107,7 @@ Permissions:
 - View all leads and deals.
 - Manage roles and account status.
 - Access dashboards and analytics.
+- View all-team dashboard KPIs and filter dashboard KPIs by owner.
 
 ### Sales Agent
 
@@ -111,6 +118,7 @@ Permissions:
 - Create and edit their own leads.
 - Create and manage deals linked to their leads.
 - Move deals through pipeline stages.
+- View their own operational dashboard KPIs.
 - Add activities once the Activities module exists.
 
 Restrictions:
@@ -124,10 +132,11 @@ Read-only role for supervisors or external stakeholders.
 
 Permissions:
 
-- View CRM data and dashboards.
+- View aggregate dashboard KPIs.
 
 Restrictions:
 
+- Cannot access record-level users, leads, deals, or activities pages.
 - Cannot create, edit, or delete users, leads, deals, or activities.
 
 ## 4. Core Features
@@ -156,7 +165,15 @@ Activities and Timeline Events may be displayed together in the same Lead Detail
 
 ### Dashboard And KPIs
 
-Dashboard metrics should become data-driven once leads and deals contain enough business data. Initial KPIs can include total leads, total deals, pipeline value, deals by stage, won deals, and lost deals.
+Dashboard metrics should become data-driven from the existing leads and deals data. Initial KPIs can include total leads, total deals, open pipeline value, won value, lost value, deals by stage, leads by status, high-priority leads, and unassigned leads.
+
+Dashboard scope should be role-aware:
+
+- Admins see all-team aggregate KPIs by default and can filter KPIs by a specific user.
+- Sales agents see their own operational KPIs.
+- Viewers see broad aggregate KPIs only.
+
+Later dashboard iterations may add an admin workforce overview showing per-user performance, workload, and ownership distribution. That may become either a dashboard section or a dedicated reporting/team performance screen once the data model is deeper.
 
 ### Authentication And Permissions
 
@@ -168,29 +185,33 @@ Authentication is implemented with JWT. Permissions should become more meaningfu
 
 Current:
 
-- Create leads with name, email, and optional company.
+- Create leads with name, email, optional company, status, priority, and budget.
 - Edit leads.
-- Delete leads with confirmation.
+- Delete leads with confirmation for admins.
 - List leads using real backend data.
+- Open a Lead Detail page.
+- Link one or more deals to a lead.
+- Assign each lead to an owner from the authenticated user.
 
 Planned:
 
-- Assign each lead to an owner.
-- Add lead status, priority, and budget.
-- Open a Lead Detail page.
-- Link one or more deals to a lead.
 - Reserve space for lead activities.
 - Filter/search/sort leads in a later phase.
 
 ### Deals
 
-Planned:
+Current:
 
 - Create a deal associated with a specific lead.
-- Edit deal details such as title, amount, and stage.
-- Delete deals with confirmation.
-- Move deals between pipeline stages.
+- Edit deal details such as title, amount, and stage through the API.
+- Delete deals through the API.
 - View all deals linked to a lead.
+- View deals on a dedicated Deals page.
+
+Planned:
+
+- Add full frontend edit/delete workflows for deals where still needed.
+- Move deals between pipeline stages from a pipeline view.
 - Display deals in a pipeline page grouped by stage.
 
 ### Activities
@@ -218,20 +239,24 @@ Current:
 
 - List users without password fields.
 - Create users with hashed passwords.
-- Edit role/status.
+- Edit full name, role, and status.
 - Delete users with confirmation.
+- Protect the current user and core demo login accounts from deletion.
 
 Planned:
 
-- Use roles more deeply in API access rules.
 - Potentially add user detail or owner-based reporting later.
 
 ### Dashboard
 
 Planned:
 
+- Add backend `GET /dashboard/kpis`.
 - Show real KPIs derived from leads and deals.
-- Include total leads, total deals, pipeline value, and stage breakdowns.
+- Include total leads, total deals, open pipeline value, won value, lost value, lead status breakdowns, and deal stage breakdowns.
+- Let admins view all-team KPIs and filter by owner.
+- Let sales agents view their own KPIs.
+- Let viewers view aggregate dashboard KPIs.
 - Add recent activity placeholder until Activities exist.
 
 ## 6. Data Model Direction
@@ -243,6 +268,7 @@ Current implementation uses UUID string IDs.
 User:
 
 - `id`
+- `fullName`
 - `email`
 - `password`
 - `role`: `admin`, `salesAgent`, `viewer`
@@ -256,29 +282,18 @@ Lead:
 - `name`
 - `email`
 - `company` nullable
+- `ownerId` nullable
+- `status`: `new`, `contacted`, `qualified`, `unqualified`, `converted`
+- `priority`: `low`, `medium`, `high`
+- `budget`: nullable integer stored in cents
 - `createdAt`
 - `updatedAt`
-
-### Planned Lead Ownership
-
-Lead should be extended with:
-
-- `ownerId`
-- `owner`
 
 User should expose:
 
 - `leads`
 
-### Planned Lead Fields
-
-Lead includes:
-
-- `status`: `new`, `contacted`, `qualified`, `unqualified`, `converted`
-- `priority`: `low`, `medium`, `high`
-- `budget`: nullable integer stored in cents
-
-### Planned Deal Model
+### Current Deal Model
 
 Deal:
 
@@ -338,20 +353,17 @@ The current backend uses routes without an `/api` prefix.
 - `GET /leads`
 - `POST /leads`
 - `GET /leads/:id`
+- `GET /leads/:id/deals`
 - `PATCH /leads/:id`
 - `DELETE /leads/:id`
 
-### Planned Deals API
+### Current Deals API
 
 - `GET /deals`
 - `POST /deals`
 - `GET /deals/:id`
 - `PATCH /deals/:id`
 - `DELETE /deals/:id`
-
-Optional relationship route:
-
-- `GET /leads/:id/deals`
 
 ### Planned Dashboard API
 
@@ -395,11 +407,11 @@ Current pages:
 - Dashboard placeholder
 - Users
 - Leads
+- Lead Detail
+- Deals
 
 Planned Phase 2 pages:
 
-- Lead Detail
-- Deals
 - Pipeline
 - Data-backed Dashboard
 
@@ -441,13 +453,13 @@ Pipeline
 Current flow:
 
 ```txt
-login -> leads/users -> create/edit/delete records -> logout
+login -> dashboard -> leads/users/deals -> create/edit/delete records -> logout
 ```
 
 Planned lead-to-deal flow:
 
 ```txt
-login -> leads -> open lead detail -> create deal -> view linked deals -> move deal through pipeline -> dashboard reflects updated KPIs
+login -> dashboard -> leads -> open lead detail -> create deal -> view linked deals -> move deal through pipeline -> dashboard reflects updated KPIs
 ```
 
 Planned activity flow:

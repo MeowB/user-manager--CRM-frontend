@@ -22,6 +22,7 @@ server-state management, and CRUD-focused UI flows.
 ## Features
 
 - Login flow using the backend auth endpoint.
+- All successful logins land on `/dashboard`.
 - Protected application layout with redirect to `/login` when no token exists.
 - Logout button that clears the stored token.
 - Role-aware navigation:
@@ -46,6 +47,7 @@ server-state management, and CRUD-focused UI flows.
   - create users with full names
   - edit user full name, role, and status
   - delete users with confirmation
+  - hide delete actions for protected demo accounts and the current user
 - TanStack Query for server-state fetching, mutations, and query invalidation.
 - Shared frontend domain types for users, leads, and deals.
 - Zod form schemas for user, lead, and deal forms.
@@ -87,8 +89,9 @@ main application layout protects dashboard, users, leads, lead detail, and deals
 pages with a token guard.
 
 Frontend navigation mirrors the current role model for user experience, while
-the backend remains the source of truth for authorization. Viewers are redirected
-away from protected CRM sections such as leads and deals.
+the backend remains the source of truth for authorization. All roles land on the
+dashboard after login. Viewers are redirected away from protected CRM sections
+such as leads and deals.
 
 Server state is managed with TanStack Query. API functions live in `src/api`,
 while pages and feature components use queries and mutations to fetch data,
