@@ -18,11 +18,19 @@ type UsersTableProps = {
 	users: User[],
 }
 
+const protectedDemoEmails = new Set([
+	"admin@example.com",
+	"sales@example.com",
+	"viewer@example.com"
+])
+
 const UsersTable = ({ users }: UsersTableProps) => {
 	const [isEditOpen, setIsEditOpen] = useState<boolean>(false)
 	const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
 	const [selectedUser, setSelectedUser] = useState<User | null>(null)
 	const currentUserId = getCurrentUserId()
+	const canDeleteUser = (user: User) =>
+		user.id !== currentUserId && !protectedDemoEmails.has(user.email)
 
 	return (
 		<div className="w-full flex flex-col">
@@ -77,7 +85,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
 									>
 										<PencilIcon color="white" />
 									</Button>
-									{user.id !== currentUserId && (
+									{canDeleteUser(user) && (
 										<Button
 											className="cursor-pointer"
 											size="sm"
