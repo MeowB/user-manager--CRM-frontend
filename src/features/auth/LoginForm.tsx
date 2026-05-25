@@ -6,7 +6,6 @@ import type React from "react"
 import { API_URL } from "@/api/api"
 import { useState } from "react"
 import { toast } from "sonner"
-import { getCurrentUserRole } from "@/lib/auth"
 
 
 const LoginForm = () => {
@@ -55,8 +54,7 @@ const LoginForm = () => {
 		localStorage.setItem("token", data.token)
 
 		if (data.token) {
-			const role = getCurrentUserRole()
-			navigate({ to: role === "viewer" ? "/dashboard" : "/leads" })
+			navigate({ to: "/dashboard" })
 		}
 	}
 
