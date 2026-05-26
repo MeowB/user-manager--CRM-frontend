@@ -404,7 +404,8 @@ Rules:
 
 Future dashboard v2:
 - Add admin workforce overview with per-user performance, workload, lead ownership, deal value, and conversion signals.
-- Decide later whether this belongs on Dashboard as an admin section or in a dedicated Reports / Team Performance screen.
+- Consider a dedicated admin-only Analytics or Team Performance page with Team Performance, Conversion Rates, Revenue by Owner, Pipeline by Owner, and Leaderboard views.
+- Keep basic owner comparisons based on current leads/deals separate from deeper movement analytics. Stage conversion, time-in-stage, proposal-to-won velocity, and bonus-oriented reporting should wait until Timeline Events exist.
 
 Layout idea:
 

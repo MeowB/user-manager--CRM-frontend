@@ -173,7 +173,7 @@ Dashboard scope should be role-aware:
 - Sales agents see their own operational KPIs.
 - Viewers see broad aggregate KPIs only.
 
-Later dashboard iterations may add an admin workforce overview showing per-user performance, workload, and ownership distribution. That may become either a dashboard section or a dedicated reporting/team performance screen once the data model is deeper.
+Later dashboard iterations may add an admin-only analytics area showing per-user performance, workload, ownership distribution, revenue by owner, pipeline by owner, conversion rates, and a leaderboard. This should likely become a dedicated Analytics or Team Performance page once the data model is deeper. Current-state owner metrics can be derived from leads and deals, but serious movement analytics such as stage conversion rate, time in stage, and proposal-to-won velocity should wait until Timeline Events exist.
 
 ### Authentication And Permissions
 
