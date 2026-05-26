@@ -13,7 +13,13 @@ import type { Deal } from "@/domain/deal"
 import { getCurrentUserRole } from "@/lib/auth"
 import { useQuery } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
-import { PencilIcon, TrashIcon } from "lucide-react"
+import {
+	ArrowDownIcon,
+	ArrowUpDownIcon,
+	ArrowUpIcon,
+	PencilIcon,
+	TrashIcon,
+} from "lucide-react"
 import { useState } from "react"
 import DeleteDealModal from "./DeleteDealModal"
 import EditDealModal from "./EditDealModal"
@@ -35,6 +41,9 @@ const dealStageClassNames: Record<Deal["stage"], string> = {
 }
 
 const badgeClassName = "inline-flex min-w-[5rem] items-center justify-center rounded-full px-2 py-0.5 text-xs font-medium"
+
+type SortDirection = "asc" | "desc"
+type DealSortKey = "title" | "lead" | "owner" | "amount" | "stage" | "updatedAt"
 
 const formatFallbackLabel = (value: string | undefined) =>
 	value ? value.charAt(0).toUpperCase() + value.slice(1) : "-"
@@ -62,10 +71,54 @@ const formatDateTime = (value: string) =>
 const formatOwnerLabel = (owner: Deal["lead"]["owner"]) =>
 	owner ? `${owner.fullName} (${owner.email})` : "Unassigned"
 
+const getOwnerSortValue = (owner: Deal["lead"]["owner"]) =>
+	owner ? owner.fullName : "Unassigned"
+
+const compareText = (first: string, second: string) =>
+	first.localeCompare(second, undefined, { sensitivity: "base" })
+
+const SortHeader = ({
+	label,
+	sortKey,
+	activeSortKey,
+	sortDirection,
+	onSort,
+	className = "",
+}: {
+	label: string
+	sortKey: DealSortKey
+	activeSortKey: DealSortKey
+	sortDirection: SortDirection
+	onSort: (sortKey: DealSortKey) => void
+	className?: string
+}) => {
+	const isActive = activeSortKey === sortKey
+	const Icon = isActive
+		? sortDirection === "asc"
+			? ArrowUpIcon
+			: ArrowDownIcon
+		: ArrowUpDownIcon
+
+	return (
+		<TableHead className={className}>
+			<button
+				type="button"
+				onClick={() => onSort(sortKey)}
+				className="inline-flex cursor-pointer items-center gap-1 text-left hover:text-primary"
+			>
+				{label}
+				<Icon className="size-3.5 text-muted-foreground" />
+			</button>
+		</TableHead>
+	)
+}
+
 const DealsTable = () => {
 	const [editDealModalOpen, setEditDealModalOpen] = useState(false)
 	const [deleteDealModalOpen, setDeleteDealModalOpen] = useState(false)
 	const [selectedDeal, setSelectedDeal] = useState<Deal>()
+	const [sortKey, setSortKey] = useState<DealSortKey>("updatedAt")
+	const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
 	const role = getCurrentUserRole()
 	const showOwnerColumn = role === "admin"
 	const showDeleteAction = role === "admin"
@@ -78,6 +131,42 @@ const DealsTable = () => {
 	} = useQuery({
 		queryKey: ["deals"],
 		queryFn: getDeals,
+	})
+	const handleSort = (nextSortKey: DealSortKey) => {
+		if (nextSortKey === sortKey) {
+			setSortDirection((currentDirection) =>
+				currentDirection === "asc" ? "desc" : "asc"
+			)
+			return
+		}
+
+		setSortKey(nextSortKey)
+		setSortDirection(nextSortKey === "updatedAt" ? "desc" : "asc")
+	}
+	const sortedDeals = [...deals].sort((firstDeal, secondDeal) => {
+		let result = 0
+
+		switch (sortKey) {
+			case "lead":
+				result = compareText(firstDeal.lead.name, secondDeal.lead.name)
+				break
+			case "owner":
+				result = compareText(
+					getOwnerSortValue(firstDeal.lead.owner),
+					getOwnerSortValue(secondDeal.lead.owner)
+				)
+				break
+			case "amount":
+				result = (firstDeal.amount ?? 0) - (secondDeal.amount ?? 0)
+				break
+			case "updatedAt":
+				result = new Date(firstDeal.updatedAt).getTime() - new Date(secondDeal.updatedAt).getTime()
+				break
+			default:
+				result = compareText(firstDeal[sortKey], secondDeal[sortKey])
+		}
+
+		return sortDirection === "asc" ? result : -result
 	})
 
 	if (isLoading) {
@@ -105,12 +194,50 @@ const DealsTable = () => {
 				<Table>
 					<TableHeader>
 						<TableRow>
-							<TableHead>Title</TableHead>
-							<TableHead>Lead</TableHead>
-							{showOwnerColumn && <TableHead>Owner</TableHead>}
-							<TableHead>Amount</TableHead>
-							<TableHead>Stage</TableHead>
-							<TableHead>Last updated</TableHead>
+							<SortHeader
+								label="Title"
+								sortKey="title"
+								activeSortKey={sortKey}
+								sortDirection={sortDirection}
+								onSort={handleSort}
+							/>
+							<SortHeader
+								label="Lead"
+								sortKey="lead"
+								activeSortKey={sortKey}
+								sortDirection={sortDirection}
+								onSort={handleSort}
+							/>
+							{showOwnerColumn && (
+								<SortHeader
+									label="Owner"
+									sortKey="owner"
+									activeSortKey={sortKey}
+									sortDirection={sortDirection}
+									onSort={handleSort}
+								/>
+							)}
+							<SortHeader
+								label="Amount"
+								sortKey="amount"
+								activeSortKey={sortKey}
+								sortDirection={sortDirection}
+								onSort={handleSort}
+							/>
+							<SortHeader
+								label="Stage"
+								sortKey="stage"
+								activeSortKey={sortKey}
+								sortDirection={sortDirection}
+								onSort={handleSort}
+							/>
+							<SortHeader
+								label="Last updated"
+								sortKey="updatedAt"
+								activeSortKey={sortKey}
+								sortDirection={sortDirection}
+								onSort={handleSort}
+							/>
 							<TableHead className="w-24 px-1 text-right">Actions</TableHead>
 						</TableRow>
 					</TableHeader>
@@ -125,7 +252,7 @@ const DealsTable = () => {
 								</TableCell>
 							</TableRow>
 						)}
-						{deals.map((deal) => (
+						{sortedDeals.map((deal) => (
 							<TableRow key={deal.id} className="odd:bg-muted/50 hover:bg-muted">
 								<TableCell className="font-medium">{deal.title}</TableCell>
 								<TableCell>

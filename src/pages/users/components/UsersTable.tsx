@@ -11,12 +11,15 @@ import type { User } from "@/domain/user"
 import { useState } from "react"
 import EditUserModal from "@/features/users/components/EditUserModal"
 import DeleteUserModal from "@/features/users/components/DeleteUserModal"
-import { TrashIcon, PencilIcon } from "lucide-react";
+import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon, TrashIcon, PencilIcon } from "lucide-react";
 import { getCurrentUserId } from "@/lib/auth"
 
 type UsersTableProps = {
 	users: User[],
 }
+
+type SortDirection = "asc" | "desc"
+type UserSortKey = "fullName" | "email" | "role" | "status"
 
 const protectedDemoEmails = new Set([
 	"admin@demo.account",
@@ -24,13 +27,72 @@ const protectedDemoEmails = new Set([
 	"viewer@demo.account"
 ])
 
+const compareText = (first: string, second: string) =>
+	first.localeCompare(second, undefined, { sensitivity: "base" })
+
+const SortHeader = ({
+	label,
+	sortKey,
+	activeSortKey,
+	sortDirection,
+	onSort,
+	className = "",
+}: {
+	label: string
+	sortKey: UserSortKey
+	activeSortKey: UserSortKey
+	sortDirection: SortDirection
+	onSort: (sortKey: UserSortKey) => void
+	className?: string
+}) => {
+	const isActive = activeSortKey === sortKey
+	const Icon = isActive
+		? sortDirection === "asc"
+			? ArrowUpIcon
+			: ArrowDownIcon
+		: ArrowUpDownIcon
+
+	return (
+		<TableHead className={className}>
+			<button
+				type="button"
+				onClick={() => onSort(sortKey)}
+				className="inline-flex cursor-pointer items-center gap-1 text-left hover:text-primary"
+			>
+				{label}
+				<Icon className="size-3.5 text-muted-foreground" />
+			</button>
+		</TableHead>
+	)
+}
+
 const UsersTable = ({ users }: UsersTableProps) => {
 	const [isEditOpen, setIsEditOpen] = useState<boolean>(false)
 	const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
 	const [selectedUser, setSelectedUser] = useState<User | null>(null)
+	const [sortKey, setSortKey] = useState<UserSortKey>("fullName")
+	const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
 	const currentUserId = getCurrentUserId()
+	const isProtectedDemoUser = (user: User) => protectedDemoEmails.has(user.email)
+	const canEditUser = (user: User) => !isProtectedDemoUser(user)
 	const canDeleteUser = (user: User) =>
-		user.id !== currentUserId && !protectedDemoEmails.has(user.email)
+		user.id !== currentUserId && !isProtectedDemoUser(user)
+	const handleSort = (nextSortKey: UserSortKey) => {
+		if (nextSortKey === sortKey) {
+			setSortDirection((currentDirection) =>
+				currentDirection === "asc" ? "desc" : "asc"
+			)
+			return
+		}
+
+		setSortKey(nextSortKey)
+		setSortDirection("asc")
+	}
+	const sortedUsers = [...users].sort((firstUser, secondUser) => {
+		const result = compareText(firstUser[sortKey], secondUser[sortKey])
+
+		return sortDirection === "asc" ? result : -result
+	})
 
 	return (
 		<div className="w-full flex flex-col">
@@ -38,10 +100,35 @@ const UsersTable = ({ users }: UsersTableProps) => {
 				<Table>
 					<TableHeader>
 						<TableRow>
-							<TableHead>User</TableHead>
-							<TableHead>Email</TableHead>
-							<TableHead>Role</TableHead>
-							<TableHead className="w-[1%] text-center">Status</TableHead>
+							<SortHeader
+								label="User"
+								sortKey="fullName"
+								activeSortKey={sortKey}
+								sortDirection={sortDirection}
+								onSort={handleSort}
+							/>
+							<SortHeader
+								label="Email"
+								sortKey="email"
+								activeSortKey={sortKey}
+								sortDirection={sortDirection}
+								onSort={handleSort}
+							/>
+							<SortHeader
+								label="Role"
+								sortKey="role"
+								activeSortKey={sortKey}
+								sortDirection={sortDirection}
+								onSort={handleSort}
+							/>
+							<SortHeader
+								label="Status"
+								sortKey="status"
+								activeSortKey={sortKey}
+								sortDirection={sortDirection}
+								onSort={handleSort}
+								className="w-[1%] text-center"
+							/>
 							<TableHead className="w-[1%] text-center">Actions</TableHead>
 						</TableRow>
 					</TableHeader>
@@ -57,7 +144,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
 								</TableCell>
 							</TableRow>
 						)}
-						{users.map((user) => (
+						{sortedUsers.map((user) => (
 							<TableRow key={user.id} className="odd:bg-muted/50 hover:bg-muted">
 								<TableCell className="font-medium">{user.fullName}</TableCell>
 								<TableCell>{user.email}</TableCell>
@@ -74,30 +161,34 @@ const UsersTable = ({ users }: UsersTableProps) => {
 										{user.status}
 									</span>
 								</TableCell>
-								<TableCell className="flex gap-2">
-									<Button
-										className="bg-blue-400 hover:bg-blue-600 cursor-pointer mr-1"
-										size="sm"
-										onClick={() => {
-											setSelectedUser(user)
-											setIsEditOpen(true)
-										}}
-									>
-										<PencilIcon color="white" />
-									</Button>
-									{canDeleteUser(user) && (
-										<Button
-											className="cursor-pointer"
-											size="sm"
-											variant="destructive"
-											onClick={() => {
-												setSelectedUser(user)
-												setIsDeleteOpen(true)
-											}}
-										>
-											<TrashIcon />
-										</Button>
-									)}
+								<TableCell className="px-1 text-right">
+									<div className="flex justify-end gap-2">
+										{canEditUser(user) && (
+											<Button
+												className="bg-blue-400 hover:bg-blue-600 cursor-pointer"
+												size="sm"
+												onClick={() => {
+													setSelectedUser(user)
+													setIsEditOpen(true)
+												}}
+											>
+												<PencilIcon color="white" />
+											</Button>
+										)}
+										{canDeleteUser(user) && (
+											<Button
+												className="cursor-pointer"
+												size="sm"
+												variant="destructive"
+												onClick={() => {
+													setSelectedUser(user)
+													setIsDeleteOpen(true)
+												}}
+											>
+												<TrashIcon />
+											</Button>
+										)}
+									</div>
 								</TableCell>
 							</TableRow>
 						))}
