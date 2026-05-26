@@ -57,6 +57,12 @@ function Layout() {
 									className="px-2 py-1 text-muted-foreground">
 									Deals
 								</Link>
+								<Link
+									to='/pipeline'
+									activeProps={{ className: "text-foreground font-medium" }}
+									className="px-2 py-1 text-muted-foreground">
+									Pipeline
+								</Link>
 							</>
 						)}
 

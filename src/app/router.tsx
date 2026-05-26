@@ -16,6 +16,7 @@ import { usersRoute } from "./routes/users";
 import { leadsRoute } from "./routes/leads";
 import { leadRoute } from "./routes/lead";
 import { dealsRoute } from "./routes/deals";
+import { pipelineRoute } from "./routes/pipeline";
 
 const routeTree = rootRoute.addChildren([
 	indexRoute,
@@ -25,7 +26,8 @@ const routeTree = rootRoute.addChildren([
 		usersRoute,
 		leadsRoute,
 		leadRoute,
-		dealsRoute
+		dealsRoute,
+		pipelineRoute
 	])
 ])
 
