@@ -1,9 +1,17 @@
-import { getDeals } from "@/api/deals"
+import { getDeals, updateDeal } from "@/api/deals"
 import { Skeleton } from "@/components/ui/skeleton"
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select"
 import type { Deal, DealStage } from "@/domain/deal"
 import { getCurrentUserRole } from "@/lib/auth"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
+import { toast } from "sonner"
 
 const pipelineStages: Array<{
 	value: DealStage
@@ -95,9 +103,13 @@ const PipelineLoadingState = () => (
 const DealCard = ({
 	deal,
 	showOwner,
+	isUpdating,
+	onStageChange,
 }: {
 	deal: Deal
 	showOwner: boolean
+	isUpdating: boolean
+	onStageChange: (deal: Deal, stage: DealStage) => void
 }) => (
 	<article className="rounded-md border bg-background p-3 shadow-sm">
 		<div className="space-y-1">
@@ -129,10 +141,30 @@ const DealCard = ({
 				<span className="font-medium text-foreground">{formatDate(deal.updatedAt)}</span>
 			</div>
 		</div>
+
+		<div className="mt-4">
+			<Select
+				value={deal.stage}
+				disabled={isUpdating}
+				onValueChange={(stage) => onStageChange(deal, stage as DealStage)}
+			>
+				<SelectTrigger className="w-full" size="sm">
+					<SelectValue placeholder="Move stage" />
+				</SelectTrigger>
+				<SelectContent>
+					{pipelineStages.map((stage) => (
+						<SelectItem key={stage.value} value={stage.value}>
+							{stage.label}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
+		</div>
 	</article>
 )
 
 const PipelinePage = () => {
+	const queryClient = useQueryClient()
 	const role = getCurrentUserRole()
 	const showOwner = role === "admin"
 	const {
@@ -144,7 +176,30 @@ const PipelinePage = () => {
 		queryKey: ["deals"],
 		queryFn: getDeals,
 	})
+	const updateDealStageMutation = useMutation({
+		mutationFn: ({ deal, stage }: { deal: Deal; stage: DealStage }) =>
+			updateDeal(deal.id, { stage }),
+		onSuccess: (_updatedDeal, variables) => {
+			queryClient.invalidateQueries({ queryKey: ["deals"] })
+			queryClient.invalidateQueries({ queryKey: ["deals", "lead", variables.deal.leadId] })
+			toast.success("Deal stage updated")
+		},
+		onError: (error) => {
+			toast.error((error as Error).message)
+		},
+	})
 	const dealsByStage = groupDealsByStage(deals)
+	const updatingDealId = updateDealStageMutation.isPending
+		? updateDealStageMutation.variables?.deal.id
+		: null
+
+	const handleStageChange = (deal: Deal, stage: DealStage) => {
+		if (deal.stage === stage) {
+			return
+		}
+
+		updateDealStageMutation.mutate({ deal, stage })
+	}
 
 	return (
 		<div className="w-full px-6 py-6">
@@ -196,7 +251,13 @@ const PipelinePage = () => {
 										</div>
 									)}
 									{stageDeals.map((deal) => (
-										<DealCard key={deal.id} deal={deal} showOwner={showOwner} />
+										<DealCard
+											key={deal.id}
+											deal={deal}
+											showOwner={showOwner}
+											isUpdating={updatingDealId === deal.id}
+											onStageChange={handleStageChange}
+										/>
 									))}
 								</div>
 							</section>
