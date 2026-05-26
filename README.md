@@ -26,9 +26,13 @@ server-state management, and CRUD-focused UI flows.
 - Protected application layout with redirect to `/login` when no token exists.
 - Logout button that clears the stored token.
 - Role-aware navigation:
-  - admins can access dashboard, users, leads, and deals
-  - sales agents can access dashboard, leads, and deals
+  - admins can access dashboard, users, leads, deals, and pipeline
+  - sales agents can access dashboard, leads, deals, and pipeline
   - viewers are currently dashboard-only
+- Dashboard:
+  - data-backed KPI cards for leads, active deals, won value, pipeline value, and won deal rate
+  - admin owner filter for all-team or user-specific dashboard metrics
+  - recent leads, recent deals, and pipeline snapshot panels
 - Leads CRUD:
   - list leads
   - create leads
@@ -36,18 +40,25 @@ server-state management, and CRUD-focused UI flows.
   - delete leads with confirmation
   - open a dedicated lead detail page
   - view owner, status, priority, budget, and linked deals
+  - sort the leads table
 - Deals:
   - create a deal from Lead Detail
+  - edit deals
+  - delete deals as an admin
   - view deals linked to a lead
   - view a dedicated Deals page
+  - sort the deals table
+  - move deals through pipeline stages with drag and drop
   - admins see all deals with owner context
-  - sales agents see deals linked to their own leads
+  - sales agents see and edit deals linked to their own leads
 - Users CRUD:
   - list users
   - create users with full names
   - edit user full name, role, and status
   - delete users with confirmation
-  - hide delete actions for protected demo accounts and the current user
+  - sort the users table
+  - hide edit/delete actions for protected demo accounts
+  - hide delete actions for the current user
 - TanStack Query for server-state fetching, mutations, and query invalidation.
 - Shared frontend domain types for users, leads, and deals.
 - Zod form schemas for user, lead, and deal forms.
@@ -85,8 +96,8 @@ Useful scripts:
 ## Architecture Overview
 
 Routing is handled with TanStack Router. The login route is public, while the
-main application layout protects dashboard, users, leads, lead detail, and deals
-pages with a token guard.
+main application layout protects dashboard, users, leads, lead detail, deals,
+and pipeline pages with a token guard.
 
 Frontend navigation mirrors the current role model for user experience, while
 the backend remains the source of truth for authorization. All roles land on the
@@ -113,6 +124,7 @@ Current primary routes:
 - `/leads`
 - `/leads/$leadId`
 - `/deals`
+- `/pipeline`
 
 ## Development Process
 

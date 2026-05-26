@@ -60,14 +60,17 @@ Current implemented depth:
 - Create deal from lead.
 - Linked deals on Lead Detail.
 - Dedicated Deals page.
+- Frontend deal edit/delete workflows.
+- Pipeline page with drag-and-drop stage movement.
+- Data-backed Dashboard KPIs, recent records, pipeline snapshot, and admin owner filter.
+- Sortable users, leads, and deals tables.
 - Repeatable demo seed data with protected demo login accounts.
 - Backend API test coverage and CI checks.
 
 Remaining Phase 2 direction:
 
-- Pipeline page.
-- Data-backed Dashboard KPIs.
-- Activity timeline placeholder.
+- Final documentation and smoke verification.
+- Activity timeline placeholder remains intentionally non-data-backed until Phase 3.
 
 ### Phase 3 - Activities And Advanced CRM Behavior
 
@@ -87,7 +90,7 @@ Final portfolio-readiness phase:
 
 - Broader automated checks across backend and frontend.
 - Seed script for realistic demo data maintained as the demo grows.
-- Demo credentials documented safely and protected from deletion.
+- Demo credentials documented safely and protected from edit and deletion.
 - Screenshots or short demo video in the README.
 - CI checks for backend tests/build and frontend typecheck/build.
 - Accessibility pass for core workflows.
@@ -189,6 +192,7 @@ Current:
 - Edit leads.
 - Delete leads with confirmation for admins.
 - List leads using real backend data.
+- Sort leads in the table.
 - Open a Lead Detail page.
 - Link one or more deals to a lead.
 - Assign each lead to an owner from the authenticated user.
@@ -196,7 +200,7 @@ Current:
 Planned:
 
 - Reserve space for lead activities.
-- Filter/search/sort leads in a later phase.
+- Filter/search leads in a later phase.
 
 ### Deals
 
@@ -207,12 +211,15 @@ Current:
 - Delete deals through the API.
 - View all deals linked to a lead.
 - View deals on a dedicated Deals page.
+- Edit deals from the frontend.
+- Delete deals from the frontend as an admin.
+- Move deals between pipeline stages from a pipeline view.
+- Display deals in a pipeline page grouped by stage.
+- Sort deals in the table.
 
 Planned:
 
-- Add full frontend edit/delete workflows for deals where still needed.
-- Move deals between pipeline stages from a pipeline view.
-- Display deals in a pipeline page grouped by stage.
+- Add filters/search in a later phase if table volume requires it.
 
 ### Activities
 
@@ -241,7 +248,9 @@ Current:
 - Create users with hashed passwords.
 - Edit full name, role, and status.
 - Delete users with confirmation.
-- Protect the current user and core demo login accounts from deletion.
+- Sort users in the table.
+- Protect core demo login accounts from edit and deletion.
+- Protect the current user from deleting their own account.
 
 Planned:
 
@@ -249,15 +258,16 @@ Planned:
 
 ### Dashboard
 
-Planned:
+Current:
 
-- Add backend `GET /dashboard/kpis`.
-- Show real KPIs derived from leads and deals.
-- Include total leads, total deals, open pipeline value, won value, lost value, lead status breakdowns, and deal stage breakdowns.
-- Let admins view all-team KPIs and filter by owner.
-- Let sales agents view their own KPIs.
-- Let viewers view aggregate dashboard KPIs.
-- Add recent activity placeholder until Activities exist.
+- Backend `GET /dashboard/summary`.
+- Real KPIs derived from leads and deals.
+- KPI cards for total leads, active deals, won value, pipeline value, and won deal rate.
+- Recent leads and recent deals panels.
+- Pipeline snapshot with stage counts and values.
+- Admin all-team view with optional owner filter.
+- Sales-agent self-scoped metrics.
+- Viewer aggregate dashboard-only access.
 
 ## 6. Data Model Direction
 
@@ -365,9 +375,10 @@ The current backend uses routes without an `/api` prefix.
 - `PATCH /deals/:id`
 - `DELETE /deals/:id`
 
-### Planned Dashboard API
+### Current Dashboard API
 
-- `GET /dashboard/kpis`
+- `GET /dashboard/summary`
+- `GET /dashboard/summary?ownerId=<userId>` for admin owner-specific metrics
 
 ## 8. Technical Stack
 
@@ -404,16 +415,12 @@ Deployment:
 Current pages:
 
 - Login
-- Dashboard placeholder
+- Dashboard
 - Users
 - Leads
 - Lead Detail
 - Deals
-
-Planned Phase 2 pages:
-
 - Pipeline
-- Data-backed Dashboard
 
 Lead Detail layout direction:
 
@@ -453,10 +460,10 @@ Pipeline
 Current flow:
 
 ```txt
-login -> dashboard -> leads/users/deals -> create/edit/delete records -> logout
+login -> dashboard -> leads/users/deals/pipeline -> create/edit/delete records -> logout
 ```
 
-Planned lead-to-deal flow:
+Current lead-to-deal flow:
 
 ```txt
 login -> dashboard -> leads -> open lead detail -> create deal -> view linked deals -> move deal through pipeline -> dashboard reflects updated KPIs

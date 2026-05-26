@@ -356,8 +356,8 @@ Pipeline
 Start simple:
 - group deals by stage
 - each deal appears as a compact card
-- stage movement can be a select or buttons
-- drag-and-drop can wait
+- move deals between stages with drag and drop
+- reuse the existing deal update API for stage changes
 
 **Outcome:** The app gets its first real CRM pipeline view.
 
@@ -367,17 +367,13 @@ Start simple:
 
 Initial KPI cards:
 - Total leads
-- Total deals
-- Open pipeline value
+- Active deals
 - Won value
-- Lost value
-- Deals by stage
-- Leads by status
-- High-priority leads
-- Unassigned leads
+- Pipeline value
+- Won deals percentage
 
 Implementation options:
-- Backend endpoint: `GET /dashboard/kpis`
+- Backend endpoint: `GET /dashboard/summary`
 - Or frontend-derived from existing leads/deals queries.
 
 Recommendation:
@@ -393,8 +389,8 @@ Role-aware scope:
 API shape:
 
 ```txt
-GET /dashboard/kpis
-GET /dashboard/kpis?ownerId=<userId>
+GET /dashboard/summary
+GET /dashboard/summary?ownerId=<userId>
 ```
 
 Rules:
@@ -413,14 +409,15 @@ Layout idea:
 Dashboard
 |-- KPI Cards
 |   |-- Total Leads
-|   |-- Total Deals
+|   |-- Active Deals
 |   |-- Pipeline Value
-|   `-- Win Rate
+|   |-- Won Value
+|   `-- Won Deals %
 |
 |-- Admin Scope Filter
-|-- Deals By Stage
-|-- Leads By Status
-`-- Recent Activity Placeholder
+|-- Recent Leads
+|-- Recent Deals
+`-- Pipeline Snapshot
 ```
 
 **Outcome:** Dashboard becomes useful instead of decorative.
@@ -443,6 +440,9 @@ Add smoke checks:
 - move deal stage
 - pipeline renders grouped deals
 - dashboard KPIs render
+- deal edit/delete permissions work
+- sortable users, leads, and deals tables work
+- protected demo accounts cannot be edited or deleted
 
 **Outcome:** Phase 2 is documented and reproducible.
 
@@ -461,7 +461,9 @@ Add smoke checks:
 11. Deals list page
 12. Pipeline page
 13. Dashboard KPIs
-14. Docs and smoke checklist
+14. Deal edit/delete workflows
+15. Table sorting
+16. Docs and smoke checklist
 
 ## Scope Boundary
 
@@ -472,12 +474,14 @@ Include in Phase 2:
 - Pipeline
 - Dashboard KPIs
 - Activity placeholder
+- Drag-and-drop pipeline movement
+- Deal edit/delete workflows
+- Sortable users, leads, and deals tables
 
 Do not include yet:
 - Full Activities CRUD
 - Task completion workflows
 - Email/password reset
-- Drag-and-drop pipeline
 - Advanced filters/search/pagination
 - Saved filter presets
 - Full role permission matrix UI

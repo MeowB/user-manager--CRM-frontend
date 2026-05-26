@@ -22,6 +22,7 @@ Frontend:
 ```bash
 cd front-end
 npx tsc -b
+npm run build
 ```
 
 ## Backend API
@@ -53,7 +54,7 @@ Users:
 - Create a user.
 - Edit the user's full name, role, and status.
 - Delete the user.
-- Protected demo accounts cannot be deleted.
+- Protected demo accounts cannot be edited or deleted.
 
 Deals:
 
@@ -61,6 +62,17 @@ Deals:
 - Admin sees all seeded deals.
 - Sales agent sees only deals linked to their own leads.
 - Viewer receives `403` for deal routes.
+- Create a deal linked to an accessible lead.
+- Edit a deal.
+- Admin can delete a deal.
+- Sales agent cannot delete a deal.
+
+Dashboard:
+
+- `GET /dashboard/summary` returns role-scoped dashboard data.
+- Admin can request `GET /dashboard/summary?ownerId=<userId>` for sales agents and admins.
+- Sales agent receives self-scoped dashboard data.
+- Viewer receives aggregate dashboard data and remains blocked from record-level CRM routes.
 
 ## Frontend UI
 
@@ -70,12 +82,21 @@ Deals:
 - Leads table shows loading, empty, success, and delete confirmation states.
 - Users table shows loading, empty, success, and delete confirmation states.
 - Users table shows full names.
-- Users table hides delete actions for the current user and protected demo accounts.
+- Users table hides edit/delete actions for protected demo accounts.
+- Users table hides delete actions for the current user.
+- Users, leads, and deals tables show pointer cursors on sortable headers and sort rows correctly.
 - Lead owner and deal owner displays show full name plus email.
 - Admin sees the Deals navigation link and Deals page.
 - Sales agent sees the Deals navigation link and only their own deals.
 - Viewer does not see the Deals navigation link.
 - Lead Detail shows linked deals.
 - Creating a deal from Lead Detail refreshes the linked deals section.
+- Editing a deal refreshes visible deal lists.
+- Admin deal deletion refreshes visible deal lists.
 - Admin sees the Owner column on the Deals page.
+- Admin and sales agents see the Pipeline navigation link and Pipeline page.
+- Pipeline groups deals by stage.
+- Dragging a deal to another stage updates the pipeline and dashboard metrics.
+- Dashboard shows KPI cards, recent leads, recent deals, and pipeline snapshot.
+- Admin dashboard owner filter excludes viewers and includes sales agents and admins.
 - Create/edit/delete actions show success or error feedback.

@@ -1475,16 +1475,16 @@ Turn the backend from manually checked routes into a repeatable, CI-backed API s
 
 ---
 
-## Next Step - Data-Backed Dashboard KPIs
+## Completed Step - Data-Backed Dashboard KPIs
 
-The next focused product session should make the dashboard useful now that every role lands there after login.
+This focused product session made the dashboard useful now that every role lands there after login.
 
 **Purpose:**
 Use the existing lead and deal data to show role-aware CRM KPIs instead of a placeholder dashboard.
 
-### Planned Session Shape
+### Delivered Session Shape
 
-1. Add backend `GET /dashboard/kpis`.
+1. Add backend `GET /dashboard/summary`.
 2. Return all-team aggregate KPIs for admins by default.
 3. Let admins pass `ownerId` to inspect one user's KPIs.
 4. Return self-scoped KPIs for sales agents.
@@ -1496,3 +1496,30 @@ Use the existing lead and deal data to show role-aware CRM KPIs instead of a pla
 
 > **Note:**
 > A future dashboard v2 may become an admin workforce overview with per-user performance, workload, ownership distribution, and conversion signals. Build the first KPI endpoint so that direction remains open without overbuilding it now.
+
+---
+
+### Session 48 - Phase 2 Closeout
+
+Closed the remaining Phase 2 CRM workflow work and updated the docs to match the current app behavior.
+
+**Purpose:**
+Finish the dashboard, pipeline, deal management, sorting, seed-data, and documentation pass without expanding into Phase 3 activities or analytics.
+
+#### Deliverables:
+- Data-backed dashboard using `GET /dashboard/summary`.
+- Dashboard KPI cards for total leads, active deals, won value, pipeline value, and won deal rate.
+- Dashboard recent leads, recent deals, pipeline snapshot, and admin owner filter.
+- Pipeline page with drag-and-drop deal stage movement.
+- Deal edit/delete frontend workflows.
+- Admins can edit and delete all deals.
+- Sales agents can edit deals linked to their own leads but cannot delete deals.
+- Viewers remain dashboard-only.
+- Sortable users, leads, and deals tables.
+- Protected demo accounts are blocked from edit and deletion in the UI and backend.
+- Realistic repeatable seed data with 2 admins, 10 sales agents, and 3 viewers total.
+- Non-demo seeded user emails use `name@example.com`; demo login emails remain `role@demo.account`.
+- Frontend and backend documentation updated for the current Phase 2 state.
+
+> **Note:**
+> Phase 2 is functionally complete. The next major product direction is Phase 3: activities, timeline events, advanced filters/search/pagination, and deeper admin analytics once movement history exists.
