@@ -1,16 +1,16 @@
 import { getDeals, updateDeal } from "@/api/deals"
 import { Skeleton } from "@/components/ui/skeleton"
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select"
 import type { Deal, DealStage } from "@/domain/deal"
 import { getCurrentUserRole } from "@/lib/auth"
+import {
+	DndContext,
+	useDraggable,
+	useDroppable,
+	type DragEndEvent,
+} from "@dnd-kit/core"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
+import { GripVertical } from "lucide-react"
 import { toast } from "sonner"
 
 const pipelineStages: Array<{
@@ -85,6 +85,9 @@ const groupDealsByStage = (deals: Deal[]) =>
 const getStageTotal = (deals: Deal[]) =>
 	deals.reduce((total, deal) => total + (deal.amount ?? 0), 0)
 
+const isDealStage = (value: unknown): value is DealStage =>
+	pipelineStages.some((stage) => stage.value === value)
+
 const PipelineLoadingState = () => (
 	<div className="grid gap-4 lg:grid-cols-5">
 		{pipelineStages.map((stage) => (
@@ -104,64 +107,135 @@ const DealCard = ({
 	deal,
 	showOwner,
 	isUpdating,
-	onStageChange,
 }: {
 	deal: Deal
 	showOwner: boolean
 	isUpdating: boolean
-	onStageChange: (deal: Deal, stage: DealStage) => void
-}) => (
-	<article className="rounded-md border bg-background p-3 shadow-sm">
-		<div className="space-y-1">
-			<h3 className="text-sm font-medium leading-5">{deal.title}</h3>
-			<Link
-				to="/leads/$leadId"
-				params={{ leadId: deal.leadId }}
-				className="text-xs text-primary hover:underline"
-			>
-				{deal.lead.name}
-			</Link>
-		</div>
+}) => {
+	const {
+		attributes,
+		listeners,
+		setNodeRef,
+		transform,
+		isDragging,
+	} = useDraggable({
+		id: deal.id,
+		data: { deal },
+		disabled: isUpdating,
+	})
+	const dragStyle = transform
+		? {
+			transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+		}
+		: undefined
 
-		<div className="mt-4 space-y-2 text-xs text-muted-foreground">
-			<div className="flex items-center justify-between gap-3">
-				<span>Amount</span>
-				<span className="font-medium text-foreground">{formatAmount(deal.amount)}</span>
+	return (
+		<article
+			ref={setNodeRef}
+			style={dragStyle}
+			className={`rounded-md border bg-background p-3 shadow-sm ${isDragging ? "z-10 opacity-80" : ""}`}
+		>
+			<div className="flex items-start gap-2">
+				<button
+					type="button"
+					aria-label={`Drag ${deal.title}`}
+					className="mt-0.5 rounded-sm p-1 text-muted-foreground hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+					disabled={isUpdating}
+					{...listeners}
+					{...attributes}
+				>
+					<GripVertical className="size-4" />
+				</button>
+				<div className="min-w-0 space-y-1">
+					<h3 className="text-sm font-medium leading-5">{deal.title}</h3>
+					<Link
+						to="/leads/$leadId"
+						params={{ leadId: deal.leadId }}
+						className="text-xs text-primary hover:underline"
+					>
+						{deal.lead.name}
+					</Link>
+				</div>
 			</div>
-			{showOwner && (
+
+			<div className="mt-4 space-y-2 text-xs text-muted-foreground">
 				<div className="flex items-center justify-between gap-3">
-					<span>Owner</span>
-					<span className="max-w-32 truncate text-right font-medium text-foreground">
-						{formatOwnerLabel(deal.lead.owner)}
+					<span>Amount</span>
+					<span className="font-medium text-foreground">{formatAmount(deal.amount)}</span>
+				</div>
+				{showOwner && (
+					<div className="flex items-center justify-between gap-3">
+						<span>Owner</span>
+						<span className="max-w-32 truncate text-right font-medium text-foreground">
+							{formatOwnerLabel(deal.lead.owner)}
+						</span>
+					</div>
+				)}
+				<div className="flex items-center justify-between gap-3">
+					<span>Updated</span>
+					<span className="font-medium text-foreground">{formatDate(deal.updatedAt)}</span>
+				</div>
+			</div>
+
+		</article>
+	)
+}
+
+const PipelineColumn = ({
+	stage,
+	deals,
+	showOwner,
+	updatingDealId,
+}: {
+	stage: (typeof pipelineStages)[number]
+	deals: Deal[]
+	showOwner: boolean
+	updatingDealId: string | null | undefined
+}) => {
+	const { isOver, setNodeRef } = useDroppable({
+		id: stage.value,
+		data: { stage: stage.value },
+	})
+	const stageTotal = getStageTotal(deals)
+
+	return (
+		<section
+			ref={setNodeRef}
+			className={`min-h-[28rem] rounded-md border p-3 transition-colors ${stage.className} ${isOver ? "ring-2 ring-primary/40" : ""}`}
+		>
+			<div className="mb-4">
+				<div className="flex items-center justify-between gap-3">
+					<h2 className="text-sm font-semibold">{stage.label}</h2>
+					<span className="rounded-full bg-background px-2 py-0.5 text-xs font-medium">
+						{deals.length}
 					</span>
 				</div>
-			)}
-			<div className="flex items-center justify-between gap-3">
-				<span>Updated</span>
-				<span className="font-medium text-foreground">{formatDate(deal.updatedAt)}</span>
+				<p className="mt-1 min-h-8 text-xs text-muted-foreground">
+					{stage.description}
+				</p>
+				<p className="mt-2 text-xs font-medium">
+					{formatAmount(stageTotal)}
+				</p>
 			</div>
-		</div>
 
-		<div className="mt-4">
-			<Select
-				value={deal.stage}
-				disabled={isUpdating}
-				onValueChange={(stage) => onStageChange(deal, stage as DealStage)}
-			>
-				<SelectTrigger className="w-full" size="sm">
-					<SelectValue placeholder="Move stage" />
-				</SelectTrigger>
-				<SelectContent>
-					{pipelineStages.map((stage) => (
-						<SelectItem key={stage.value} value={stage.value}>
-							{stage.label}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
-		</div>
-	</article>
-)
+			<div className="space-y-3">
+				{deals.length === 0 && (
+					<div className="rounded-md border border-dashed bg-background/70 p-4 text-center text-xs text-muted-foreground">
+						Drop deals here
+					</div>
+				)}
+				{deals.map((deal) => (
+					<DealCard
+						key={deal.id}
+						deal={deal}
+						showOwner={showOwner}
+						isUpdating={updatingDealId === deal.id}
+					/>
+				))}
+			</div>
+		</section>
+	)
+}
 
 const PipelinePage = () => {
 	const queryClient = useQueryClient()
@@ -201,6 +275,17 @@ const PipelinePage = () => {
 		updateDealStageMutation.mutate({ deal, stage })
 	}
 
+	const handleDragEnd = (event: DragEndEvent) => {
+		const deal = event.active.data.current?.deal as Deal | undefined
+		const targetStage = event.over?.id
+
+		if (!deal || !isDealStage(targetStage)) {
+			return
+		}
+
+		handleStageChange(deal, targetStage)
+	}
+
 	return (
 		<div className="w-full px-6 py-6">
 			<div className="mb-6 flex items-center justify-between gap-4">
@@ -219,51 +304,19 @@ const PipelinePage = () => {
 			)}
 
 			{!isLoading && !isError && (
-				<div className="grid gap-4 lg:grid-cols-5">
-					{pipelineStages.map((stage) => {
-						const stageDeals = dealsByStage[stage.value]
-						const stageTotal = getStageTotal(stageDeals)
-
-						return (
-							<section
+				<DndContext onDragEnd={handleDragEnd}>
+					<div className="grid gap-4 lg:grid-cols-5">
+						{pipelineStages.map((stage) => (
+							<PipelineColumn
 								key={stage.value}
-								className={`min-h-[28rem] rounded-md border p-3 ${stage.className}`}
-							>
-								<div className="mb-4">
-									<div className="flex items-center justify-between gap-3">
-										<h2 className="text-sm font-semibold">{stage.label}</h2>
-										<span className="rounded-full bg-background px-2 py-0.5 text-xs font-medium">
-											{stageDeals.length}
-										</span>
-									</div>
-									<p className="mt-1 min-h-8 text-xs text-muted-foreground">
-										{stage.description}
-									</p>
-									<p className="mt-2 text-xs font-medium">
-										{formatAmount(stageTotal)}
-									</p>
-								</div>
-
-								<div className="space-y-3">
-									{stageDeals.length === 0 && (
-										<div className="rounded-md border border-dashed bg-background/70 p-4 text-center text-xs text-muted-foreground">
-											No deals in this stage
-										</div>
-									)}
-									{stageDeals.map((deal) => (
-										<DealCard
-											key={deal.id}
-											deal={deal}
-											showOwner={showOwner}
-											isUpdating={updatingDealId === deal.id}
-											onStageChange={handleStageChange}
-										/>
-									))}
-								</div>
-							</section>
-						)
-					})}
-				</div>
+								stage={stage}
+								deals={dealsByStage[stage.value]}
+								showOwner={showOwner}
+								updatingDealId={updatingDealId}
+							/>
+						))}
+					</div>
+				</DndContext>
 			)}
 		</div>
 	)
