@@ -26,9 +26,9 @@ function Layout() {
 
 	return (
 		<>
-			<div className="min-h-screen flex text-sm">
-				<header className="w-38 border-r bg-muted/30">
-					<nav className="flex h-full flex-col p-5 gap-1">
+			<div className="flex h-dvh text-sm">
+				<header className="sticky top-0 h-dvh w-38 border-r bg-muted/30">
+					<nav className="flex h-full flex-col gap-1 overflow-y-auto p-5">
 						<Link
 							to='/dashboard'
 							activeProps={{ className: "text-foreground font-medium" }}
@@ -66,7 +66,7 @@ function Layout() {
 							</>
 						)}
 
-						<div className="mt-auto w-full">
+						<div className="sticky bottom-0 mt-auto w-full bg-muted/30 pt-4">
 							<Button
 								onClick={handleLogout}
 								className="w-full px-3"
@@ -76,7 +76,7 @@ function Layout() {
 						</div>
 					</nav>
 				</header>
-				<main className="flex-1">
+				<main className="flex-1 overflow-y-auto">
 					<Outlet />
 				</main>
 			</div>
