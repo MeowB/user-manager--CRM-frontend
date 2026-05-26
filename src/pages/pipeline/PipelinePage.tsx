@@ -287,7 +287,7 @@ const PipelinePage = () => {
 	}
 
 	return (
-		<div className="w-full px-6 py-6">
+		<div className="w-full px-4 py-6 sm:px-5 lg:px-6">
 			<div className="mb-6 flex items-center justify-between gap-4">
 				<div>
 					<h1 className="text-2xl font-semibold">Pipeline</h1>

@@ -112,7 +112,7 @@ const LeadsTable = () => {
 								<TableHead>Status</TableHead>
 								<TableHead>Priority</TableHead>
 								{showOwnerColumn && <TableHead>Owner</TableHead>}
-								<TableHead className="w-[1%] text-center">Actions</TableHead>
+								<TableHead className="w-24 px-1 text-right">Actions</TableHead>
 							</TableRow>
 						</TableHeader>
 						<TableBody>
@@ -151,31 +151,33 @@ const LeadsTable = () => {
 										</span>
 									</TableCell>
 									{showOwnerColumn && <TableCell>{formatOwnerLabel(lead.owner)}</TableCell>}
-									<TableCell className="flex justify-end gap-2">
-										<Button
-											onClick={() => {
-												setEditLeadModalOpen(true)
-												setCurrentLead(lead)
-											}}
-											className="bg-blue-400 hover:bg-blue-600 cursor-pointer"
-											size={"sm"}
-										>
-											<PencilIcon color="white" />
-										</Button>
-
-										{showDeleteAction && (
+									<TableCell className="px-1 text-right">
+										<div className="flex justify-end gap-2">
 											<Button
 												onClick={() => {
+													setEditLeadModalOpen(true)
 													setCurrentLead(lead)
-													setDeleteLeadModalOpen(true)
 												}}
-												variant="destructive"
-												className="bg-red-400 hover:bg-red-600 cursor-pointer"
+												className="bg-blue-400 hover:bg-blue-600 cursor-pointer"
 												size={"sm"}
 											>
-												<TrashIcon color="white" />
+												<PencilIcon color="white" />
 											</Button>
-										)}
+
+											{showDeleteAction && (
+												<Button
+													onClick={() => {
+														setCurrentLead(lead)
+														setDeleteLeadModalOpen(true)
+													}}
+													variant="destructive"
+													className="bg-red-400 hover:bg-red-600 cursor-pointer"
+													size={"sm"}
+												>
+													<TrashIcon color="white" />
+												</Button>
+											)}
+										</div>
 									</TableCell>
 								</TableRow>
 							))}
