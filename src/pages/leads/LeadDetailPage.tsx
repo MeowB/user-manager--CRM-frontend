@@ -8,7 +8,7 @@ import DeleteLeadModal from "@/features/leads/components/DeleteLeadModal"
 import EditLeadModal from "@/features/leads/components/EditLeadModal"
 import { getCurrentUserRole } from "@/lib/auth"
 import { useQuery } from "@tanstack/react-query"
-import { Link, useNavigate, useParams } from "@tanstack/react-router"
+import { useNavigate, useParams } from "@tanstack/react-router"
 import { ArrowLeft, HandshakeIcon, PencilIcon, TrashIcon } from "lucide-react"
 import { useState } from "react"
 import type { Lead } from "@/domain/lead"
@@ -132,6 +132,15 @@ const LeadDetailPage = () => {
 	const [deleteLeadModalOpen, setDeleteLeadModalOpen] = useState(false)
 	const [createDealModalOpen, setCreateDealModalOpen] = useState(false)
 
+	const handleBack = () => {
+		if (window.history.length > 1) {
+			window.history.back()
+			return
+		}
+
+		navigate({ to: "/leads" })
+	}
+
 	const {
 		data: lead,
 		isLoading,
@@ -187,11 +196,9 @@ const LeadDetailPage = () => {
 
 			<div className="mb-6">
 				<div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-					<Button asChild variant="outline" size="sm">
-						<Link to="/leads">
-							<ArrowLeft className="size-4" />
-							Back to leads
-						</Link>
+					<Button variant="outline" size="sm" onClick={handleBack}>
+						<ArrowLeft className="size-4" />
+						Back
 					</Button>
 
 					<div className="flex items-center gap-2">
